@@ -10,14 +10,14 @@
     --bg: #f7f7f5; --panel: #ffffff; --text: #1d1d1b; --muted: #6b6b66; --line: #e6e5e0;
     --accent: #3b5bdb; --ok: #2f9e44; --ok-bg: #e6f4ea; --info: #1c7ed6; --info-bg: #e3f0fb;
     --warn: #c2410c; --warn-bg: #fdecdf; --bad: #c92a2a; --bad-bg: #fde8e8; --dim-bg: #efefec; --flash: #fff4c2;
-    --shadow: 0 10px 30px rgba(0,0,0,.12);
+    --shadow: 0 10px 30px rgba(0,0,0,.12); --logo-frame: #11141a; --logo-line: #2563eb;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #141413; --panel: #1d1d1b; --text: #ecebe6; --muted: #9a9a93; --line: #2e2e2b;
       --accent: #8ca2ff; --ok: #69db7c; --ok-bg: #1f3325; --info: #74c0fc; --info-bg: #1b2c3d;
       --warn: #ffa94d; --warn-bg: #3b2616; --bad: #ff8787; --bad-bg: #3d1f1f; --dim-bg: #2a2a27; --flash: #4a4220;
-      --shadow: 0 10px 30px rgba(0,0,0,.5);
+      --shadow: 0 10px 30px rgba(0,0,0,.5); --logo-frame: #fff; --logo-line: #4f86ff;
       color-scheme: dark;
     }
   }
@@ -25,13 +25,15 @@
       --bg: #141413; --panel: #1d1d1b; --text: #ecebe6; --muted: #9a9a93; --line: #2e2e2b;
       --accent: #8ca2ff; --ok: #69db7c; --ok-bg: #1f3325; --info: #74c0fc; --info-bg: #1b2c3d;
       --warn: #ffa94d; --warn-bg: #3b2616; --bad: #ff8787; --bad-bg: #3d1f1f; --dim-bg: #2a2a27; --flash: #4a4220;
-      --shadow: 0 10px 30px rgba(0,0,0,.5);
+      --shadow: 0 10px 30px rgba(0,0,0,.5); --logo-frame: #fff; --logo-line: #4f86ff;
       color-scheme: dark;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
          font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   header { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 20px 24px 8px; }
+  .logo { width: 32px; height: 32px; flex: none; margin-right: -6px; }
+  .logo .f { stroke: var(--logo-frame); } .logo .l { stroke: var(--logo-line); }
   h1 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
   .status { color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 8px; }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
@@ -131,6 +133,7 @@
 </head>
 <body>
 <header>
+  <svg class="logo" viewBox="0 0 120 120" role="img" aria-label="Plugin Auditor logo"><g fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"><path class="f" d="M16 74V88A16 16 0 0 0 32 104H88A16 16 0 0 0 104 88V74"/><path class="f" d="M104 46V32A16 16 0 0 0 88 16H32A16 16 0 0 0 16 32V46"/><path class="l" d="M6 60H40L50 76 60 36 70 60H114"/></g></svg>
   <h1>Plugin Auditor</h1>
   <div class="status"><span class="dot" id="dot"></span><span id="status">Connecting...</span></div>
   <div class="seg" id="window" role="group" aria-label="Time window">
