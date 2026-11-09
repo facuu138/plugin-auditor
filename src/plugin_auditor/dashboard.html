@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plugin Auditor</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --panel: #ffffff; --text: #1d1d1b; --muted: #6b6b66; --line: #e6e5e0;
+    --accent: #3b5bdb; --ok: #2f9e44; --ok-bg: #e6f4ea; --info: #1c7ed6; --info-bg: #e3f0fb;
+    --warn: #c2410c; --warn-bg: #fdecdf; --bad: #c92a2a; --bad-bg: #fde8e8; --dim-bg: #efefec; --flash: #fff4c2;
+    --shadow: 0 10px 30px rgba(0,0,0,.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141413; --panel: #1d1d1b; --text: #ecebe6; --muted: #9a9a93; --line: #2e2e2b;
+      --accent: #8ca2ff; --ok: #69db7c; --ok-bg: #1f3325; --info: #74c0fc; --info-bg: #1b2c3d;
+      --warn: #ffa94d; --warn-bg: #3b2616; --bad: #ff8787; --bad-bg: #3d1f1f; --dim-bg: #2a2a27; --flash: #4a4220;
+      --shadow: 0 10px 30px rgba(0,0,0,.5);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+      --bg: #141413; --panel: #1d1d1b; --text: #ecebe6; --muted: #9a9a93; --line: #2e2e2b;
+      --accent: #8ca2ff; --ok: #69db7c; --ok-bg: #1f3325; --info: #74c0fc; --info-bg: #1b2c3d;
+      --warn: #ffa94d; --warn-bg: #3b2616; --bad: #ff8787; --bad-bg: #3d1f1f; --dim-bg: #2a2a27; --flash: #4a4220;
+      --shadow: 0 10px 30px rgba(0,0,0,.5);
+      color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  header { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 20px 24px 8px; }
+  h1 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
+  .status { color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+  .dot.live { background: var(--ok); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(47,158,68,.5); } 70% { box-shadow: 0 0 0 8px rgba(47,158,68,0); } 100% { box-shadow: 0 0 0 0 rgba(47,158,68,0); } }
+  .seg { margin-left: auto; display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--panel); }
+  .seg button { border: 0; background: none; color: var(--muted); font: inherit; padding: 6px 12px; cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button.on { background: var(--dim-bg); color: var(--text); font-weight: 500; }
+  main { padding: 8px 24px 32px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .tile .v { font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tile .k { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .grid { display: grid; grid-template-columns: minmax(280px, 340px) minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .panel h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted);
+              margin: 0; padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+  .panel h2 label { text-transform: none; letter-spacing: 0; font-size: 12px; cursor: pointer; }
+  .feed { list-style: none; margin: 0; padding: 0; max-height: 72vh; overflow-y: auto; }
+  .feed li { padding: 8px 16px; border-bottom: 1px solid var(--line); transition: background 2s; }
+  .feed li.new { background: var(--flash); transition: none; }
+  .feed .row1 { display: flex; justify-content: space-between; gap: 8px; }
+  .feed .name { font-weight: 500; overflow-wrap: anywhere; }
+  .feed .time { color: var(--muted); font-size: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .feed .meta { color: var(--muted); font-size: 12px; }
+  .tabs { display: flex; gap: 4px; padding: 8px 8px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; align-items: center; }
+  .tabs button { background: none; border: 0; padding: 8px 12px; font: inherit; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; }
+  .tabs button.on { color: var(--text); border-bottom-color: var(--accent); font-weight: 500; }
+  .tabs input { margin-left: auto; margin-bottom: 6px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px;
+                background: var(--bg); color: var(--text); font: inherit; min-width: 180px; }
+  .tabs button.has-used::after, .tabs button.has-updated::after { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-left: 6px; vertical-align: 2px; }
+  .tabs button.has-used::after { background: var(--ok); }
+  .tabs button.has-updated::after { background: var(--info); }
+  .tablewrap { overflow-x: auto; max-height: 72vh; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { position: sticky; top: 0; z-index: 1; background: var(--panel); color: var(--muted); font-weight: 500; font-size: 12px; cursor: pointer; user-select: none; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover td { background: var(--bg); }
+  .muted { color: var(--muted); }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; background: var(--dim-bg); white-space: nowrap; }
+  .pill.ok { background: var(--ok-bg); color: var(--ok); }
+  .pill.info { background: var(--info-bg); color: var(--info); }
+  .pill.warn { background: var(--warn-bg); color: var(--warn); }
+  .pill.bad { background: var(--bad-bg); color: var(--bad); }
+  .empty { padding: 24px 16px; color: var(--muted); }
+  /* (i) icons and their tooltip */
+  .itip { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; margin-left: 4px;
+          border-radius: 50%; border: 1px solid currentColor; font-size: 9px; font-weight: 700; font-style: normal;
+          color: var(--muted); cursor: help; vertical-align: 1px; opacity: .8; }
+  .itip:hover, .itip:focus { opacity: 1; color: var(--accent); outline: none; }
+  #tip { position: fixed; z-index: 50; max-width: 300px; padding: 8px 10px; border-radius: 8px; font-size: 12px; line-height: 1.4;
+         background: var(--text); color: var(--bg); box-shadow: var(--shadow); pointer-events: none; display: none; white-space: normal; }
+  /* Used / updated highlights fade over 10 s */
+  @keyframes litUsed { from { background: var(--ok-bg); box-shadow: inset 3px 0 0 var(--ok); } to { background: transparent; box-shadow: inset 3px 0 0 transparent; } }
+  @keyframes litUpdated { from { background: var(--info-bg); box-shadow: inset 3px 0 0 var(--info); } to { background: transparent; box-shadow: inset 3px 0 0 transparent; } }
+  tr.lit-used td { animation: litUsed 10s ease-out forwards; animation-delay: inherit; }
+  tr.lit-updated td { animation: litUpdated 10s ease-out forwards; animation-delay: inherit; }
+  .badge { font-size: 11px; margin-left: 6px; padding: 0 6px; border-radius: 999px; vertical-align: 1px; }
+  .badge.used { background: var(--ok-bg); color: var(--ok); }
+  .badge.updated { background: var(--info-bg); color: var(--info); }
+  /* Detail drawer */
+  #backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.25); display: none; z-index: 20; }
+  #drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100vw); background: var(--panel); z-index: 30;
+            border-left: 1px solid var(--line); box-shadow: var(--shadow); transform: translateX(100%); transition: transform .2s ease;
+            display: flex; flex-direction: column; }
+  #drawer.open { transform: none; }
+  #drawer .head { padding: 16px 20px; border-bottom: 1px solid var(--line); display: flex; gap: 12px; align-items: flex-start; }
+  #drawer .head h3 { margin: 0; font-size: 17px; word-break: break-all; }
+  #drawer .head .sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  #drawer .close { margin-left: auto; border: 0; background: none; font-size: 22px; line-height: 1; color: var(--muted); cursor: pointer; }
+  #drawer .body { padding: 4px 20px 24px; overflow-y: auto; }
+  #drawer h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 20px 0 8px; }
+  #drawer p { margin: 6px 0; }
+  .kv { display: grid; grid-template-columns: 120px 1fr; gap: 4px 12px; font-size: 13px; margin-top: 10px; }
+  .kv dt { color: var(--muted); } .kv dd { margin: 0; word-break: break-all; }
+  .score { display: flex; align-items: baseline; gap: 10px; }
+  .score .n { font-size: 34px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .bar { height: 8px; border-radius: 4px; background: var(--dim-bg); position: relative; margin: 8px 0 4px; overflow: hidden; }
+  .bar span { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 4px; }
+  .bands { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+  .mini { width: 100%; font-size: 13px; }
+  .mini th, .mini td { padding: 6px 8px; position: static; cursor: default; white-space: normal; }
+  .mini tbody tr { cursor: default; }
+  .mini tbody tr.click { cursor: pointer; }
+  .finding { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin: 8px 0; }
+  .finding .t { font-weight: 500; }
+  .loc { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--muted); word-break: break-all; }
+  .finding .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-top: 8px; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 13px; margin: 8px 0; }
+  .foot { color: var(--muted); font-size: 12px; margin-top: 16px; text-align: center; }
+  code.cmd { display: block; padding: 8px 10px; border-radius: 6px; background: var(--dim-bg); font-size: 12px; word-break: break-all; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Plugin Auditor</h1>
+  <div class="status"><span class="dot" id="dot"></span><span id="status">Connecting...</span></div>
+  <div class="seg" id="window" role="group" aria-label="Time window">
+    <button data-w="all">All time</button><button data-w="30d" class="on">30 days</button><button data-w="7d">7 days</button>
+  </div>
+</header>
+<main>
+  <section class="tiles" id="tiles"></section>
+  <div class="grid">
+    <section class="panel">
+      <h2>Live activity <label><input type="checkbox" id="hooks"> hooks</label></h2>
+      <ul class="feed" id="feed"></ul>
+    </section>
+    <section class="panel">
+      <div class="tabs" id="tabs">
+        <button data-tab="sources" class="on">Sources</button>
+        <button data-tab="skills">Skills</button>
+        <button data-tab="mcp">MCP servers</button>
+        <button data-tab="other">Removed</button>
+        <input id="filter" type="search" placeholder="Filter" aria-label="Filter rows">
+      </div>
+      <div class="tablewrap" id="table"></div>
+    </section>
+  </div>
+  <p class="foot" id="foot"></p>
+</main>
+<div id="tip" role="tooltip"></div>
+<div id="backdrop"></div>
+<aside id="drawer" aria-hidden="true"><div class="head" id="dhead"></div><div class="body" id="dbody"></div></aside>
+<script>
+(() => {
+  let data = null, tab = "sources", win = "30d", sort = null, seenFeed = new Set(), firstLoad = true, openKey = null;
+  const LIT_MS = 10000;
+  let prevSnap = null;          // key -> {tab, uses, sig} from the previous update
+  const lit = new Map();        // key -> {type: "used" | "updated", at: ms}
+  const details = new Map();    // row key -> what to show when clicked
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const day = ts => ts ? ts.slice(0, 10) : "never";
+  const home = p => String(p || "").replace(/\/(Users|home)\/[^/\s)]+/g, "~");
+  const WIN_LABEL = { all: "all time", "30d": "last 30 days", "7d": "last 7 days" };
+  const fmtTime = ts => {
+    if (!ts) return "";
+    const d = new Date(ts), now = new Date();
+    return d.toDateString() === now.toDateString()
+      ? d.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit", second: "2-digit"})
+      : d.toLocaleDateString([], {month: "short", day: "numeric"}) + " " + d.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
+  };
+
+  // ---------- explanations shown by the (i) icons ----------
+  const TIP = {
+    name: "The name you or Claude use to call it. Plugin items are namespaced, like brag:brag.",
+    source: "A plugin, or a folder of loose skills at user or project scope.",
+    verdict: "Based on all time. invoked: Claude or you called it. active: only its hooks ran. UNUSED: never called. disabled: turned off, so not loaded. unknown: a UI mod that leaves no trace. (k/n idle): k of its n items were never called.",
+    risk: "Security score from NVIDIA SkillSpector, 0 to 100. 0 to 20: SAFE. 21 to 50: CAUTION. 51 to 100: DO NOT INSTALL. An incomplete scan turns SAFE into CAUTION. Scores are heuristic. Click a row to see why.",
+    worstRisk: "The highest SkillSpector score among this source's skills. Click a row to see each skill.",
+    scope: "Where it is installed. user: every project. project: one repo, shared in git. local: one repo, only you.",
+    contents: "What it provides: skills, commands, agents, hooks, MCP servers, or UI mods.",
+    invoked: "Times Claude or you called something in it, in the selected window.",
+    hooks: "Times its hooks ran by themselves (for example after every tool call). Not counted as use.",
+    byClaude: "Times Claude chose to use it on its own, through the Skill or Agent tool, in the selected window.",
+    byYou: "Times you typed it as a slash command, like /ask, in the selected window.",
+    lastUsed: "Most recent call, any time.",
+    tokens: "Estimated tokens its name and description add to the system prompt of every session, used or not.",
+    added: "When it was installed, or when its file was created.",
+    kind: "skill, command (a slash command file), or agent.",
+    server: "An MCP server: a plugin's, your own, or a claude.ai connector.",
+    calls: "MCP tool calls, in the selected window.",
+    tools: "How many different tools of this server were called, all time.",
+    topTools: "Most-called tools of this server, all time.",
+    item: "Something used in the past that is not installed now: an uninstalled plugin, a deleted skill, a removed MCP server, or a plugin loaded once with --plugin-dir.",
+    removedKind: "What it was: skill, command, agent, MCP server, or hook.",
+    removedPlugin: "The plugin it came from, when its name shows one (like brag:brag).",
+    uses: "Times it was used, in the selected window.",
+  };
+  const info = key => `<i class="itip" tabindex="0" data-tip="${esc(TIP[key] || key)}">i</i>`;
+
+  const tip = $("tip");
+  function showTip(el) {
+    tip.textContent = el.dataset.tip; tip.style.display = "block";
+    const r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+    const left = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), window.innerWidth - w - 8);
+    let top = r.bottom + 8; if (top + h > window.innerHeight - 8) top = r.top - h - 8;
+    tip.style.left = left + "px"; tip.style.top = top + "px";
+  }
+  const hideTip = () => { tip.style.display = "none"; };
+  document.addEventListener("mouseover", e => { const el = e.target.closest(".itip"); el ? showTip(el) : hideTip(); });
+  document.addEventListener("focusin", e => { const el = e.target.closest(".itip"); el ? showTip(el) : hideTip(); });
+  document.addEventListener("scroll", hideTip, true);
+
+  // ---------- counting per window ----------
+  const INVOKE = ["skill", "command", "agent", "mcp", "signal"];
+  const sumKinds = (byKind, kinds) => kinds.reduce((a, k) => a + ((byKind || {})[k] || 0), 0);
+  const cUse = (c, kinds) => sumKinds(win === "all" ? c.by_kind : (c.windows || {})[win], kinds);
+  const iUse = (i, kinds) => i.components.reduce((a, c) => a + cUse(c, kinds), 0);
+  const vUse = v => win === "all" ? v.uses : sumKinds((v.windows || {})[win], ["skill", "command", "agent", "mcp", "hook", "signal"]);
+  const sessionsIn = d => win === "all" ? d.sessions.count : (d.sessions.windows || {})[win] || 0;
+
+  const verdictPill = v => {
+    const cls = /^invoked/.test(v) ? "ok" : /^active/.test(v) ? "info" : /^UNUSED|never fired/.test(v) ? "warn" : "";
+    return `<span class="pill ${cls}">${esc(v)}</span>`;
+  };
+  const riskClass = rk => !rk || rk.error ? "" : rk.score >= 51 ? "bad" : rk.score >= 21 || rk.recommendation === "CAUTION" ? "warn" : "ok";
+  const riskLabel = rk => !rk ? "" : rk.error ? "scan error" : `${rk.score} ${String(rk.recommendation).replace(/_/g, " ")}`;
+  const riskPill = rk => rk ? `<span class="pill ${riskClass(rk)}">${esc(riskLabel(rk))}</span>` : "";
+
+  // ---------- used / updated highlights ----------
+  function snapshot(d) {
+    const snap = new Map();
+    const put = (key, tab, uses, sig) => snap.set(key, { tab, uses, sig });
+    d.items.forEach(i => {
+      const newest = i.components.reduce((m, c) => (c.modified || "") > m ? c.modified : m, "");
+      put(`src|${i.id}`, "sources", i.invocations, [i.version, i.last_updated, i.components.length, newest].join("|"));
+      i.components.forEach(c => {
+        if (["skill", "command", "agent"].includes(c.kind)) {
+          const b = c.by_kind, rk = c.risk;
+          put(`sk|${i.id}|${c.invoked_as}`, "skills", (b.skill || 0) + (b.agent || 0) + (b.command || 0),
+              [c.modified, rk ? (rk.scanned_at || rk.error) : ""].join("|"));
+        } else if (c.kind === "mcp" || (c.kind === "mod" && c.by_kind.mcp)) {
+          put(`mcp|${i.id}|${c.name}`, "mcp", c.uses, "");
+        }
+      });
+    });
+    Object.entries(d.unattributed).forEach(([k, v]) => {
+      const isMcp = k.startsWith("claude.ai connector:");
+      put(isMcp ? `mcp|${k}` : `oth|${k}`, isMcp ? "mcp" : "other", v.uses, "");
+    });
+    return snap;
+  }
+  function diff(d) {
+    const snap = snapshot(d), now = Date.now();
+    if (prevSnap) {
+      snap.forEach((cur, key) => {
+        const old = prevSnap.get(key);
+        const type = !old ? "updated" : cur.uses > old.uses ? "used" : cur.sig !== old.sig ? "updated" : null;
+        if (!type) return;
+        lit.set(key, { type, at: now });
+        if (cur.tab !== tab) {
+          const btn = document.querySelector(`.tabs button[data-tab="${cur.tab}"]`);
+          if (btn && !btn.classList.contains("has-used")) btn.classList.add(type === "used" ? "has-used" : "has-updated");
+        }
+      });
+    }
+    prevSnap = snap;
+  }
+  function pruneLit() {
+    const now = Date.now(); let changed = false;
+    lit.forEach((v, k) => { if (now - v.at > LIT_MS) { lit.delete(k); changed = true; } });
+    return changed;
+  }
+
+  // ---------- tiles ----------
+  function tiles(d) {
+    const comps = d.items.flatMap(i => i.components);
+    const inv = comps.filter(c => ["skill", "command", "agent", "mcp"].includes(c.kind));
+    const idle = inv.filter(c => !c.disabled && !cUse(c, INVOKE));
+    const idleTokens = idle.reduce((a, c) => a + c.context_tokens, 0);
+    const sessions = sessionsIn(d);
+    const calls = d.items.reduce((a, i) => a + iUse(i, INVOKE), 0) + Object.values(d.unattributed).reduce((a, v) => a + vUse(v), 0);
+    const hookRuns = d.items.reduce((a, i) => a + iUse(i, ["hook"]), 0);
+    const plugins = d.items.filter(i => i.kind === "plugin").length;
+    const flagged = comps.filter(c => c.risk && !c.risk.error && c.risk.score >= 51).length;
+    const w = WIN_LABEL[win];
+    const t = [
+      [plugins, "plugins installed", "Plugins in installed_plugins.json, at any scope."],
+      [`${inv.filter(c => !c.disabled).length - idle.length}/${inv.filter(c => !c.disabled).length}`, `invoked, ${w}`, "Skills, commands, agents, and MCP servers that Claude or you called at least once in the window."],
+      [`~${idleTokens.toLocaleString()}`, "idle tokens per session", "Tokens that items not called in the window add to the system prompt of every session. Estimated as name plus description, divided by 4."],
+      [`~${(idleTokens * sessions).toLocaleString()}`, `idle tokens, ${w}`, `Idle tokens per session times the ${sessions} sessions started in the window. What unused items cost you in context.`],
+      [calls.toLocaleString(), `invocations, ${w}`, "Calls to skills, commands, agents, and MCP tools, by Claude or you."],
+      [hookRuns.toLocaleString(), `hook runs, ${w}`, "Times plugin hooks ran by themselves. Not counted as use."],
+      [flagged, "skills marked DO NOT INSTALL", "Skills with a SkillSpector score of 51 or more. Open the Skills tab and click one to see why."],
+    ];
+    $("tiles").innerHTML = t.map(([v, k, tipText]) => `<div class="tile"><div class="v">${esc(v)}</div><div class="k">${esc(k)}<i class="itip" tabindex="0" data-tip="${esc(tipText)}">i</i></div></div>`).join("");
+  }
+
+  // ---------- live feed ----------
+  function feed(d) {
+    const items = d.recent.filter(e => $("hooks").checked || e.kind !== "hook");
+    if (!items.length) { $("feed").innerHTML = `<li class="empty">No activity yet.</li>`; return; }
+    $("feed").innerHTML = items.map(e => {
+      const key = `${e.time}|${e.kind}|${e.name}|${e.session}`;
+      const isNew = !firstLoad && !seenFeed.has(key);
+      seenFeed.add(key);
+      return `<li class="${isNew ? "new" : ""}">
+        <div class="name"><span class="pill">${esc(e.kind)}</span> ${esc(e.name)}</div>
+        <div class="meta"><span class="time">${esc(fmtTime(e.time))}</span> · ${esc(home(e.source))} · ${esc(home(e.project))}</div></li>`;
+    }).join("");
+    requestAnimationFrame(() => document.querySelectorAll(".feed li.new").forEach(li => li.classList.remove("new")));
+    firstLoad = false;
+  }
+
+  // ---------- tables ----------
+  // A cell is a plain value, or {html, sort} for rich content.
+  const cell = (html, sortVal) => ({ html, sort: sortVal });
+  function contents(i) {
+    const counts = {};
+    i.components.forEach(c => counts[c.kind] = (counts[c.kind] || 0) + 1);
+    return Object.entries(counts).map(([k, v]) => `${v} ${k}${v > 1 ? "s" : ""}`).join(", ") || "nothing found";
+  }
+  function worstRisk(i) {
+    return i.components.reduce((w, c) => c.risk && !c.risk.error && (!w || c.risk.score > w.score) ? c.risk : w, null);
+  }
+  function rowsFor(d) {
+    details.clear();
+    const add = (key, row, detail) => { details.set(key, detail); return Object.assign(row, { key }); };
+    // Register every skill so a source's drawer can open its skills from any tab.
+    d.items.forEach(i => i.components.forEach(c => {
+      if (["skill", "command", "agent"].includes(c.kind)) details.set(`sk|${i.id}|${c.invoked_as}`, { type: "skill", i, c });
+    }));
+    if (tab === "sources") {
+      return {
+        cols: [["Source", 0, "source"], ["Verdict", 0, "verdict"], ["Worst risk", 0, "worstRisk"], ["Scope", 0, "scope"], ["Contents", 0, "contents"],
+               ["Invoked", 1, "invoked"], ["Hook runs", 1, "hooks"], ["Last used", 0, "lastUsed"], ["~Tokens", 1, "tokens"]],
+        defaultSort: 5,
+        rows: d.items.map(i => {
+          const wr = worstRisk(i);
+          return add(`src|${i.id}`, [home(i.label), cell(verdictPill(i.verdict), i.verdict), cell(riskPill(wr), wr ? wr.score : -1),
+            home(i.scope_label), contents(i), iUse(i, INVOKE), iUse(i, ["hook"]), day(i.last_used), i.context_tokens],
+            { type: "source", i });
+        }),
+      };
+    }
+    if (tab === "skills") {
+      const rows = [];
+      d.items.forEach(i => i.components.forEach(c => {
+        if (!["skill", "command", "agent"].includes(c.kind)) return;
+        rows.push(add(`sk|${i.id}|${c.invoked_as}`, [c.invoked_as, cell(verdictPill(c.verdict), c.verdict),
+          cell(riskPill(c.risk), c.risk && !c.risk.error ? c.risk.score : -1), c.kind, home(i.label), home(i.scope_label),
+          cUse(c, ["skill", "agent"]), cUse(c, ["command"]), day(c.last_used), c.context_tokens, day(c.added)],
+          { type: "skill", i, c }));
+      }));
+      return {
+        cols: [["Name", 0, "name"], ["Verdict", 0, "verdict"], ["Risk", 0, "risk"], ["Kind", 0, "kind"], ["Source", 0, "source"],
+               ["Scope", 0, "scope"], ["By Claude", 1, "byClaude"], ["By you", 1, "byYou"], ["Last used", 0, "lastUsed"],
+               ["~Tokens", 1, "tokens"], ["Added", 0, "added"]],
+        defaultSort: 2, rows,
+      };
+    }
+    if (tab === "mcp") {
+      const rows = [];
+      const top = det => Object.entries(det || {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([t, n]) => `${t} ×${n}`).join(", ");
+      d.items.forEach(i => i.components.forEach(c => {
+        if (c.kind !== "mcp" && !(c.kind === "mod" && c.by_kind.mcp)) return;
+        const name = c.kind === "mcp" ? c.name : `${i.label.split("@")[0]} (mod tools)`;
+        rows.push(add(`mcp|${i.id}|${c.name}`, [name, cell(verdictPill(c.verdict), c.verdict), i.label, home(i.scope_label),
+          cUse(c, ["mcp"]), Object.keys(c.by_detail).length, day(c.last_used), cell(`<span class="muted">${esc(top(c.by_detail))}</span>`, top(c.by_detail))],
+          { type: "mcp", name, src: i.label, scope: i.scope_label, usage: c }));
+      }));
+      Object.entries(d.unattributed).forEach(([k, v]) => {
+        if (!k.startsWith("claude.ai connector:")) return;
+        const name = k.split(": ")[1];
+        rows.push(add(`mcp|${k}`, [name, cell(verdictPill("invoked"), "invoked"), "claude.ai account", "account",
+          vUse(v), Object.keys(v.by_detail || {}).length, day(v.last_used), cell(`<span class="muted">${esc(top(v.by_detail))}</span>`, top(v.by_detail))],
+          { type: "mcp", name, src: "claude.ai connector", scope: "account", usage: v }));
+      });
+      return {
+        cols: [["Server", 0, "server"], ["Verdict", 0, "verdict"], ["Source", 0, "source"], ["Scope", 0, "scope"], ["Calls", 1, "calls"],
+               ["Tools used", 1, "tools"], ["Last used", 0, "lastUsed"], ["Top tools", 0, "topTools"]],
+        defaultSort: 4, rows,
+      };
+    }
+    const KIND = { skill: "skill", command: "command", agent: "agent", mcp: "MCP server", hook: "hook", signal: "signal" };
+    return {
+      cols: [["Name", 0, "item"], ["Kind", 0, "removedKind"], ["Plugin", 0, "removedPlugin"], ["Uses", 1, "uses"], ["Last used", 0, "lastUsed"]],
+      defaultSort: 4,
+      rows: Object.entries(d.unattributed).filter(([k]) => !k.startsWith("claude.ai connector:")).map(([k, v]) => {
+        const [kind, ...rest] = k.split(": "), name = rest.join(": ");
+        const plugin = ["skill", "command", "agent"].includes(kind) && name.includes(":") ? name.split(":")[0] : "";
+        return add(`oth|${k}`, [name, KIND[kind] || kind, plugin, vUse(v), day(v.last_used)], { type: "other", k, v, kind: KIND[kind] || kind, name, plugin });
+      }),
+    };
+  }
+  const plain = c => c && typeof c === "object" && "html" in c ? c.sort : c;
+
+  function table(d) {
+    let { cols, rows, defaultSort } = rowsFor(d);
+    const q = $("filter").value.trim().toLowerCase();
+    if (q) rows = rows.filter(r => r.some(c => String(plain(c)).toLowerCase().includes(q)));
+    const s = sort && sort.tab === tab ? sort : { col: defaultSort, dir: -1, tab };
+    rows.sort((a, b) => {
+      const x = plain(a[s.col]), y = plain(b[s.col]);
+      return (typeof x === "number" && typeof y === "number" ? x - y : String(x).localeCompare(String(y))) * s.dir;
+    });
+    if (!rows.length) { $("table").innerHTML = `<div class="empty">Nothing here.</div>`; return; }
+    const head = cols.map(([n, num, tipKey], idx) =>
+      `<th class="${num ? "num" : ""}" data-col="${idx}">${esc(n)}${info(tipKey)}${s.col === idx ? (s.dir > 0 ? " ↑" : " ↓") : ""}</th>`).join("");
+    const now = Date.now();
+    const body = rows.map(r => {
+      const l = lit.get(r.key);
+      const tr = l ? `<tr data-key="${esc(r.key)}" class="lit-${l.type}" style="animation-delay:-${(now - l.at) / 1000}s">` : `<tr data-key="${esc(r.key)}">`;
+      const badge = l ? `<span class="badge ${l.type}">${l.type}</span>` : "";
+      return tr + r.map((c, idx) => {
+        if (c && typeof c === "object" && "html" in c) return `<td>${c.html}</td>`;
+        const num = cols[idx][1];
+        return `<td class="${num ? "num" : ""}${c === 0 || c === "never" ? " muted" : ""}">${esc(num && !c ? "" : c)}${idx === 0 ? badge : ""}</td>`;
+      }).join("") + "</tr>";
+    }).join("");
+    $("table").innerHTML = `<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+    $("table").querySelectorAll("th").forEach(th => th.onclick = e => {
+      if (e.target.closest(".itip")) return;
+      const col = +th.dataset.col;
+      sort = { tab, col, dir: s.col === col ? -s.dir : (cols[col][1] ? -1 : 1) };
+      table(data);
+    });
+    $("table").querySelectorAll("tbody tr").forEach(tr => tr.onclick = () => openDrawer(tr.dataset.key));
+  }
+
+  // ---------- detail drawer ----------
+  const kv = pairs => `<dl class="kv">${pairs.filter(p => p[1] !== undefined && p[1] !== "").map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v}</dd>`).join("")}</dl>`;
+  const windowsTable = (byKindAll, windows, kinds) => {
+    const rowsHtml = kinds.map(([label, ks]) => `<tr><td>${esc(label)}</td>${[byKindAll, (windows || {})["30d"], (windows || {})["7d"]]
+      .map(b => `<td class="num">${sumKinds(b, ks) || ""}</td>`).join("")}</tr>`).join("");
+    return `<table class="mini"><thead><tr><th></th><th class="num">All time</th><th class="num">30 days</th><th class="num">7 days</th></tr></thead><tbody>${rowsHtml}</tbody></table>`;
+  };
+  function verdictText(v) {
+    if (/^invoked \(inferred\)/.test(v)) return "Credited from a behavior signature (for example a max-effort turn for think-hard), not a logged call.";
+    if (/^invoked \(\d+\/\d+ idle\)/.test(v)) return "Something in it was called. The idle items were never called.";
+    if (/^invoked/.test(v)) return "Claude or you called it at least once.";
+    if (/^active/.test(v)) return "Only its hooks ran. Hooks run by themselves, so this does not mean anyone chose to use it.";
+    if (/^UNUSED \(added/.test(v)) return "Never called, but it was added less than 7 days ago.";
+    if (/^UNUSED/.test(v)) return "Never called in any transcript. It still costs context tokens in every session. A candidate to remove.";
+    if (/^unknown/.test(v)) return "A UI mod that leaves no trace in transcripts, so its use cannot be measured.";
+    if (/^never fired/.test(v)) return "Its hooks never ran.";
+    if (/^disabled/.test(v)) return "Turned off, so Claude Code does not load it and it costs no context. Not counted as unused.";
+    return "";
+  }
+  function riskSection(rk, d) {
+    if (!rk) return `<h4>Risk ${info("risk")}</h4><p class="muted">Not scanned yet. Risk scan: ${esc(d.risk_status || "unknown")}.</p>`;
+    if (rk.error) return `<h4>Risk ${info("risk")}</h4><p>The SkillSpector scan failed: ${esc(rk.error)}</p>`;
+    const color = rk.score >= 51 ? "var(--bad)" : rk.score >= 21 ? "var(--warn)" : "var(--ok)";
+    const rules = (rk.explain && rk.explain.rules) || [];
+    const real = (rk.findings || []).filter(f => !String(f.id).startsWith("AE"));
+    const gaps = (rk.findings || []).filter(f => String(f.id).startsWith("AE"));
+    const byRule = {};
+    real.forEach(f => (byRule[f.id] = byRule[f.id] || []).push(f));
+    const sevRank = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
+    const groups = Object.values(byRule).sort((a, b) => (sevRank[b[0].severity] || 0) - (sevRank[a[0].severity] || 0));
+    const findingHtml = g => {
+      const f = g[0];
+      const locs = g.slice(0, 5).map(x => `${esc(x.file)}${x.line ? ":" + esc(x.line) : ""}`).join("<br>") + (g.length > 5 ? `<br>and ${g.length - 5} more` : "");
+      const sevCls = f.severity === "CRITICAL" || f.severity === "HIGH" ? "bad" : f.severity === "MEDIUM" ? "warn" : "";
+      return `<div class="finding">
+        <div class="t"><span class="pill ${sevCls}">${esc(f.severity)}</span> ${esc(f.id)} ${esc(f.pattern || f.category)} ${g.length > 1 ? `<span class="muted">×${g.length}</span>` : ""}</div>
+        <div class="muted" style="font-size:12px">${esc(f.category)}${f.confidence != null ? ` · confidence ${esc(f.confidence)}` : ""}</div>
+        ${f.explanation ? `<div class="lbl">What it means</div><div>${esc(f.explanation)}</div>` : ""}
+        ${f.remediation ? `<div class="lbl">How to fix</div><div>${esc(f.remediation)}</div>` : ""}
+        ${f.finding ? `<div class="lbl">Matched</div><div class="loc">${esc(f.finding)}</div>` : ""}
+        <div class="lbl">Where</div><div class="loc">${locs}</div></div>`;
+    };
+    return `<h4>Risk ${info("risk")}</h4>
+      <div class="score"><span class="n" style="color:${color}">${esc(rk.score)}</span><span class="pill ${riskClass(rk)}">${esc(String(rk.recommendation).replace(/_/g, " "))}</span><span class="muted">${rk.status === "partial" || rk.coverage_gaps ? "partial coverage" : "full coverage"}</span></div>
+      <div class="bar"><span style="width:${Math.max(2, rk.score)}%;background:${color}"></span></div>
+      <div class="bands"><span>0 SAFE</span><span>21 CAUTION</span><span>51 DO NOT INSTALL</span><span>100</span></div>
+      <h4>Why</h4><p>${esc(rk.reason || "")}</p>
+      ${rules.length ? `<h4>What adds to the score</h4>
+        <table class="mini"><thead><tr><th>Rule</th><th>Finding</th><th class="num">Count</th><th class="num">Points</th></tr></thead><tbody>
+        ${rules.map(r => `<tr><td>${esc(r.id)}</td><td>${esc(r.pattern || r.category)}${r.coverage_gap ? ` <span class="pill">coverage gap</span>` : ""}</td><td class="num">${r.count}</td><td class="num">${r.points}</td></tr>`).join("")}
+        </tbody></table>
+        <p class="muted" style="font-size:12px">Points follow SkillSpector's formula: CRITICAL 50, HIGH 25, MEDIUM 10, LOW 5, times confidence. Repeats of a rule count 100%, 50%, 25%, then nothing. Findings in executable files count 1.3 times. The total is capped at 100.</p>` : ""}
+      ${groups.length ? `<h4>Findings (${real.length})</h4>${groups.map(findingHtml).join("")}` : `<p class="muted">${gaps.length ? "No findings besides coverage gaps." : "No findings."}</p>`}
+      ${gaps.length ? `<details><summary>${gaps.length} coverage gaps: files the scanner could not fully inspect</summary>${gaps.map(f => `<div class="loc finding">${esc(f.finding || f.file)}</div>`).join("")}</details>` : ""}
+      <h4>Check it yourself</h4><code class="cmd">skillspector scan "${esc(home(rk.folder))}" --no-llm</code>
+      <p class="muted" style="font-size:12px">Scanned ${esc(fmtTime(rk.scanned_at))} with SkillSpector ${esc(rk.version)}, static mode. Scores are heuristic signals to review, not verdicts.</p>`;
+  }
+  function renderDrawer(key) {
+    const det = details.get(key);
+    if (!det) return false;
+    const d = data;
+    let head = "", body = "";
+    if (det.type === "skill") {
+      const { i, c } = det;
+      head = `<div><h3>${esc(c.invoked_as)}</h3><div class="sub">${esc(c.kind)} · ${esc(i.label)} · ${esc(home(i.scope_label))}</div></div>`;
+      body = `<h4>Verdict ${info("verdict")}</h4><p>${verdictPill(c.verdict)} ${esc(verdictText(c.verdict))}</p>
+        ${c.kind === "skill" ? riskSection(c.risk, d) : ""}
+        <h4>Usage</h4>${windowsTable(c.by_kind, c.windows, [["By Claude", ["skill", "agent"]], ["By you", ["command"]]])}
+        ${kv([["Last used", esc(c.last_used ? fmtTime(c.last_used) : "never")], ["Projects", esc((c.used_in_projects || []).map(home).join(", "))],
+              ["~Tokens", esc(c.context_tokens) + " per session"], ["Added", esc(day(c.added))], ["File changed", esc(day(c.modified))], ["Path", esc(home(c.path))]])}`;
+    } else if (det.type === "source") {
+      const { i } = det;
+      head = `<div><h3>${esc(i.label)}</h3><div class="sub">${esc(i.kind)} · ${esc(home(i.scope_label))}</div></div>`;
+      const comps = i.components.map(c => {
+        const clickable = ["skill", "command", "agent"].includes(c.kind);
+        return `<tr class="${clickable ? "click" : ""}" data-sk="${clickable ? esc(`sk|${i.id}|${c.invoked_as}`) : ""}">
+          <td>${c.kind === "mod" ? `UI mod <span class="muted">(${esc(c.name.replace(/^\.\//, ""))})</span>` : esc(c.invoked_as)}</td><td>${esc(c.kind)}</td><td>${verdictPill(c.verdict)}</td><td>${riskPill(c.risk)}</td><td class="num">${c.uses || ""}</td></tr>`;
+      }).join("");
+      const allKinds = i.components.reduce((a, c) => { Object.entries(c.by_kind || {}).forEach(([k, v]) => a[k] = (a[k] || 0) + v); return a; }, {});
+      body = `<h4>Verdict ${info("verdict")}</h4><p>${verdictPill(i.verdict)} ${esc(verdictText(i.verdict))}</p>
+        <h4>Usage</h4>${windowsTable(allKinds, i.windows, [["Invoked", INVOKE], ["Hook runs", ["hook"]]])}
+        ${kv([["Version", esc(i.version)], ["Installed", esc(day(i.installed_at))], ["Last updated", esc(day(i.last_updated))],
+              ["~Tokens", esc(i.context_tokens) + " per session"], ["Path", esc(home(i.install_path))]])}
+        <h4>Contents (${i.components.length})</h4>
+        <table class="mini"><thead><tr><th>Name</th><th>Kind</th><th>Verdict</th><th>Risk</th><th class="num">Uses</th></tr></thead><tbody>${comps}</tbody></table>`;
+    } else if (det.type === "mcp") {
+      const u = det.usage;
+      const tools = Object.entries(u.by_detail || {}).sort((a, b) => b[1] - a[1]);
+      head = `<div><h3>${esc(det.name)}</h3><div class="sub">MCP server · ${esc(det.src)} · ${esc(home(det.scope))}</div></div>`;
+      body = `<h4>Calls</h4>${windowsTable(u.by_kind || { mcp: u.uses }, u.windows, [["Calls", ["mcp"]]])}
+        <h4>Tools used (${tools.length})</h4>${tools.length ? `<table class="mini"><tbody>${tools.map(([t, n]) => `<tr><td>${esc(t)}</td><td class="num">${n}</td></tr>`).join("")}</tbody></table>` : `<p class="muted">None yet.</p>`}`;
+    } else {
+      head = `<div><h3>${esc(det.name)}</h3><div class="sub">${esc(det.kind)} · removed${det.plugin ? ` · from plugin ${esc(det.plugin)}` : ""}</div></div>`;
+      body = `<p>${esc(TIP.item)}</p>
+        <h4>Usage before removal</h4>${windowsTable({ [det.k.split(": ")[0]]: det.v.uses }, det.v.windows, [["Uses", ["skill", "command", "agent", "mcp", "hook", "signal"]]])}
+        ${kv([["Last used", esc(fmtTime(det.v.last_used))]])}
+        <p class="muted" style="font-size:12px">${det.v.uses > 2 ? "You used it more than a couple of times. If you miss it, reinstall it." : "Barely used, so removing it was probably fine."}</p>`;
+    }
+    $("dhead").innerHTML = head + `<button class="close" aria-label="Close">×</button>`;
+    $("dbody").innerHTML = body;
+    $("dhead").querySelector(".close").onclick = closeDrawer;
+    $("dbody").querySelectorAll("tr.click").forEach(tr => tr.onclick = () => openDrawer(tr.dataset.sk));
+    return true;
+  }
+  function openDrawer(key) {
+    if (!renderDrawer(key)) return;
+    openKey = key;
+    $("drawer").classList.add("open"); $("drawer").setAttribute("aria-hidden", "false");
+    $("backdrop").style.display = "block";
+    $("dbody").scrollTop = 0;
+  }
+  function closeDrawer() {
+    openKey = null; hideTip();
+    $("drawer").classList.remove("open"); $("drawer").setAttribute("aria-hidden", "true");
+    $("backdrop").style.display = "none";
+  }
+  $("backdrop").onclick = closeDrawer;
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+
+  // ---------- wiring ----------
+  function syncTabs() {
+    document.querySelectorAll(".tabs button").forEach(x => x.classList.toggle("on", x.dataset.tab === tab));
+    const b = document.querySelector(`.tabs button[data-tab="${tab}"]`);
+    if (b) b.classList.remove("has-used", "has-updated");
+  }
+  // Deep links: #tab=skills&open=plugin:skill&win=7d opens a tab, a time window, and a detail panel.
+  let deepLinked = false;
+  function applyHash(d) {
+    if (deepLinked || !location.hash) return;
+    deepLinked = true;
+    const h = new URLSearchParams(location.hash.slice(1));
+    if (["all", "30d", "7d"].includes(h.get("win"))) {
+      win = h.get("win");
+      document.querySelectorAll("#window button").forEach(x => x.classList.toggle("on", x.dataset.w === win));
+    }
+    if (h.get("tab")) { tab = h.get("tab"); syncTabs(); }
+    tiles(d); table(d);
+    const want = h.get("open");
+    if (want) {
+      const key = [...details.keys()].find(k => k.endsWith("|" + want) || k === want);
+      if (key) openDrawer(key);
+    }
+  }
+
+  function render(d) {
+    data = d;
+    diff(d);
+    tiles(d); feed(d); table(d);
+    applyHash(d);
+    if (openKey) { const top = $("dbody").scrollTop; if (renderDrawer(openKey)) $("dbody").scrollTop = top; }
+    const risk = d.risk_status ? ` · risk scan: ${d.risk_status}` : "";
+    const tok = d.auditor_tokens || { llm_tokens: 0, scans: 0 };
+    $("foot").innerHTML = `This auditor has used <b>${tok.llm_tokens.toLocaleString()}</b> LLM tokens.` +
+      `<i class="itip" tabindex="0" data-tip="${esc(`It only reads local files: transcripts, plugin folders, and settings. The ${tok.scans} SkillSpector scans ran in static mode (--no-llm), so no model was called. The usage hook prints nothing, so it adds nothing to Claude's context.`)}">i</i>`;
+    $("status").textContent = `Live · ${d.sessions.count} sessions · updated ${new Date(d.generated_at).toLocaleTimeString()}${risk}`;
+  }
+  $("tabs").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    tab = b.dataset.tab; syncTabs();
+    if (data) table(data);
+  });
+  $("window").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    win = b.dataset.w;
+    document.querySelectorAll("#window button").forEach(x => x.classList.toggle("on", x === b));
+    if (data) { tiles(data); table(data); if (openKey) renderDrawer(openKey); }
+  });
+  $("filter").addEventListener("input", () => data && table(data));
+  $("hooks").addEventListener("change", () => data && feed(data));
+  setInterval(() => { if (pruneLit() && data) table(data); }, 1000);
+
+  function connect() {
+    const es = new EventSource("/api/stream");
+    es.onopen = () => $("dot").classList.add("live");
+    es.onmessage = ev => render(JSON.parse(ev.data));
+    es.onerror = () => { $("dot").classList.remove("live"); $("status").textContent = "Disconnected. Retrying..."; };
+  }
+  fetch("/api/data").then(r => r.json()).then(d => { if (d.items) render(d); }).finally(connect);
+})();
+</script>
+</body>
+</html>
