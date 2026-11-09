@@ -38,24 +38,32 @@ Installing plugins and skills is easy, so they pile up. Then you lose track:
 
 ## Quick start
 
-You need Python 3.10 or later and Claude Code. There are no other dependencies.
+You need Python 3.10 or later, [uv](https://docs.astral.sh/uv/) (or pipx), and Claude Code. `cpa` itself has no other dependencies.
 
-```bash
-uv tool install git+https://github.com/facuu138/plugin-auditor.git
-# or: pipx install git+https://github.com/facuu138/plugin-auditor.git
-
-plugin-auditor          # report in the terminal
-plugin-auditor serve    # live dashboard at http://127.0.0.1:8765
-plugin-auditor demo     # the dashboard on fictional data, to look around first
-```
-
-This installs two commands: `plugin-auditor`, and `cpa`, a short alias for it. The rest of this README uses `cpa`.
-
-To add risk scores, install SkillSpector too. `cpa` then finds it and uses it by itself:
+**1. Install SkillSpector first.** It gives every skill a security score, which fills the "Worst risk" and "Risk" columns. Without it those columns stay empty. `cpa` finds it by itself once it is installed.
 
 ```bash
 uv tool install git+https://github.com/NVIDIA/skillspector.git
 ```
+
+**2. Install plugin-auditor.**
+
+```bash
+uv tool install git+https://github.com/facuu138/plugin-auditor.git
+# or: pipx install git+https://github.com/facuu138/plugin-auditor.git
+```
+
+This installs two commands: `plugin-auditor`, and `cpa`, a short alias for it. The rest of this README uses `cpa`.
+
+**3. Run it.**
+
+```bash
+cpa serve    # live dashboard at http://127.0.0.1:8765
+cpa          # report in the terminal
+cpa demo     # the dashboard on fictional data, to look around first
+```
+
+The first `cpa serve` scans every skill folder, which can take a few minutes. Risk scores appear row by row as scans finish, and the header shows the progress. Later runs only rescan skills that changed.
 
 ## Commands
 
