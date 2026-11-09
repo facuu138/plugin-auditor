@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="plugin-auditor logo">
+  <g fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path class="f" d="M16 74 L16 88 A16 16 0 0 0 32 104 L88 104 A16 16 0 0 0 104 88 L104 74" stroke="#11141a"/>
+    <path class="f" d="M104 46 L104 32 A16 16 0 0 0 88 16 L32 16 A16 16 0 0 0 16 32 L16 46" stroke="#11141a"/>
+    <path class="l" d="M6 60 L40 60 L50 76 L60 36 L70 60 L114 60" stroke="#2563eb"/>
+  </g>
+</svg>

@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo-dark.svg">
+    <img src="docs/logo.svg" alt="plugin-auditor logo" width="96">
+  </picture>
+</p>
+
 # plugin-auditor
 
 **Know what your Claude Code plugins and skills are doing.** See what is installed and where, what Claude actually uses, what the unused items cost you in context, and which skills look risky.
