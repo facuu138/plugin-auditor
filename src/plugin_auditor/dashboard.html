@@ -51,6 +51,11 @@
   .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 9px 14px; }
   .tile.click { cursor: pointer; }
   .tile.click:hover, .tile.on { border-color: var(--accent); }
+  .promptbox { position: relative; }
+  .copybtn { position: absolute; top: 14px; right: 6px; width: 28px; height: 28px; display: grid; place-items: center; padding: 0;
+             border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--muted); cursor: pointer; }
+  .copybtn:hover { color: var(--text); }
+  pre.prompt { padding-right: 42px !important; }
   pre.prompt { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--dim-bg); border: 1px solid var(--line); border-radius: 8px;
                padding: 10px 12px; font-size: 12px; margin: 8px 0; user-select: all; }
   .chip { display: inline-flex; gap: 6px; align-items: center; margin: 8px 16px 0; padding: 3px 10px; border-radius: 999px; font-size: 12px;
@@ -526,6 +531,8 @@
   // ---------- remove prompt ----------
   // The dashboard never deletes anything. It writes a prompt you paste into Claude Code, which asks before it acts.
   let rmText = "";
+  const COPY_ICON = `<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5A1.5 1.5 0 0 0 9 1.5H3A1.5 1.5 0 0 0 1.5 3v6A1.5 1.5 0 0 0 3 10.5h.5"/></svg>`;
+  const CHECK_ICON = `<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3.2L13 4.8"/></svg>`;
   const SAFE = "Before you delete or change anything, show me exactly what you will remove and wait for my OK. " +
     "Back up any folder you delete to ~/.claude/removed-backups/ first. Do not touch anything else.";
   function removeLine(c, i) {
@@ -560,7 +567,7 @@
     rmText = removalPrompt(det);
     if (!rmText) return "";
     return `<h4>Remove it</h4><p class="muted" style="font-size:12px">This tool never deletes anything. Copy this prompt, paste it into Claude Code, and Claude will ask before it removes anything.</p>
-      <pre class="prompt">${esc(rmText)}</pre><button class="mini-btn" id="copyRm">Copy prompt</button>`;
+      <div class="promptbox"><pre class="prompt">${esc(rmText)}</pre><button class="copybtn" id="copyRm" title="Copy prompt" aria-label="Copy prompt">${COPY_ICON}</button></div>`;
   }
 
   function renderDrawer(key) {
@@ -610,9 +617,9 @@
     $("dhead").querySelector(".close").onclick = closeDrawer;
     const copy = $("copyRm");
     if (copy) copy.onclick = async () => {
-      try { await navigator.clipboard.writeText(rmText); copy.textContent = "Copied"; }
-      catch (e) { const r = document.createRange(); r.selectNodeContents(document.querySelector("pre.prompt")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); copy.textContent = "Press Ctrl/Cmd+C"; }
-      setTimeout(() => copy.textContent = "Copy prompt", 2000);
+      try { await navigator.clipboard.writeText(rmText); copy.innerHTML = CHECK_ICON; }
+      catch (e) { const r = document.createRange(); r.selectNodeContents(document.querySelector("pre.prompt")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); copy.title = "Press Ctrl/Cmd+C to copy"; }
+      setTimeout(() => { copy.innerHTML = COPY_ICON; copy.title = "Copy prompt"; }, 2000);
     };
     $("dbody").querySelectorAll("tr.click").forEach(tr => tr.onclick = () => openDrawer(tr.dataset.sk));
     return true;

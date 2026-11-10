@@ -1,0 +1,490 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]: Demo with fictional plugins and activity. Install it to audit your own setup.
+  - banner [ref=e3]:
+    - img "Plugin Auditor logo" [ref=e4]
+    - heading "Plugin Auditor" [level=1] [ref=e6]
+    - generic [ref=e7]: "Live · 67 sessions · updated 10:03:42 AM · risk scan: demo data"
+    - group "Time window" [ref=e10]:
+      - button "All time" [ref=e11] [cursor=pointer]
+      - button "30 days" [ref=e12] [cursor=pointer]
+      - button "7 days" [ref=e13] [cursor=pointer]
+  - main [ref=e14]:
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - generic [ref=e17]: "7"
+        - generic [ref=e18]:
+          - text: plugins installed
+          - generic [ref=e19]: i
+      - generic [ref=e20]:
+        - generic [ref=e21]: 9/26
+        - generic [ref=e22]:
+          - text: invoked, last 30 days
+          - generic [ref=e23]: i
+      - generic [ref=e24]:
+        - generic [ref=e25]: ~340
+        - generic [ref=e26]:
+          - text: idle tokens per session
+          - generic [ref=e27]: i
+      - generic [ref=e28]:
+        - generic [ref=e29]: ~17,000
+        - generic [ref=e30]:
+          - text: idle tokens, last 30 days
+          - generic [ref=e31]: i
+      - generic [ref=e32]:
+        - generic [ref=e33]: "241"
+        - generic [ref=e34]:
+          - text: invocations, last 30 days
+          - generic [ref=e35]: i
+      - generic [ref=e36]:
+        - generic [ref=e37]: "301"
+        - generic [ref=e38]:
+          - text: hook runs, last 30 days
+          - generic [ref=e39]: i
+      - button "2 skills marked DO NOT INSTALL i" [ref=e40] [cursor=pointer]:
+        - generic [ref=e41]: "2"
+        - generic [ref=e42]:
+          - text: skills marked DO NOT INSTALL
+          - generic [ref=e43]: i
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - heading [level=2] [ref=e46]:
+          - text: Live activity
+          - generic [ref=e47]:
+            - generic [ref=e48] [cursor=pointer]:
+              - checkbox "hooks" [ref=e49]
+              - text: hooks
+            - button "Hide" [ref=e50] [cursor=pointer]
+        - list [ref=e51]:
+          - listitem [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e54]: mcp
+              - text: mcp__claude_ai_Slack__send_message
+            - generic [ref=e55]: Nov 9 10:07 AM · claude.ai Slack · ~/code/api-service
+          - listitem [ref=e56]:
+            - generic [ref=e57]:
+              - generic [ref=e58]: skill
+              - text: commit-coach:commit
+            - generic [ref=e59]: Nov 9 10:03 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e60]:
+            - generic [ref=e61]:
+              - generic [ref=e62]: skill
+              - text: commit-coach:commit
+            - generic [ref=e63]: Nov 8 06:23 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e64]:
+            - generic [ref=e65]:
+              - generic [ref=e66]: command
+              - text: commit-coach:commit
+            - generic [ref=e67]: Nov 8 06:19 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e68]:
+            - generic [ref=e69]:
+              - generic [ref=e70]: command
+              - text: commit-coach:commit
+            - generic [ref=e71]: Nov 8 06:15 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e72]:
+            - generic [ref=e73]:
+              - generic [ref=e74]: command
+              - text: commit-coach:commit
+            - generic [ref=e75]: Nov 8 06:11 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e76]:
+            - generic [ref=e77]:
+              - generic [ref=e78]: mcp
+              - text: mcp__issue-tracker__create_issue
+            - generic [ref=e79]: Nov 8 06:07 AM · (loose, ~/code/webapp) · ~/code/webapp
+          - listitem [ref=e80]:
+            - generic [ref=e81]:
+              - generic [ref=e82]: skill
+              - text: commit-coach:split-commit
+            - generic [ref=e83]: Nov 8 06:03 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e84]:
+            - generic [ref=e85]:
+              - generic [ref=e86]: command
+              - text: commit-coach:commit
+            - generic [ref=e87]: Nov 8 05:11 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e88]:
+            - generic [ref=e89]:
+              - generic [ref=e90]: skill
+              - text: commit-coach:split-commit
+            - generic [ref=e91]: Nov 8 05:07 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e92]:
+            - generic [ref=e93]:
+              - generic [ref=e94]: command
+              - text: standup-notes
+            - generic [ref=e95]: Nov 8 05:03 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e96]:
+            - generic [ref=e97]:
+              - generic [ref=e98]: skill
+              - text: commit-coach:commit
+            - generic [ref=e99]: Nov 7 02:27 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e100]:
+            - generic [ref=e101]:
+              - generic [ref=e102]: mcp
+              - text: mcp__issue-tracker__get_issue
+            - generic [ref=e103]: Nov 7 02:23 AM · (loose, ~/code/webapp) · ~/code/api-service
+          - listitem [ref=e104]:
+            - generic [ref=e105]:
+              - generic [ref=e106]: command
+              - text: deploy-pilot:deploy
+            - generic [ref=e107]: Nov 7 02:19 AM · deploy-pilot@cloudkit · ~/code/api-service
+          - listitem [ref=e108]:
+            - generic [ref=e109]:
+              - generic [ref=e110]: mcp
+              - text: mcp__deploykit__status
+            - generic [ref=e111]: Nov 7 02:15 AM · deploy-pilot@cloudkit · ~/code/api-service
+          - listitem [ref=e112]:
+            - generic [ref=e113]:
+              - generic [ref=e114]: command
+              - text: standup-notes
+            - generic [ref=e115]: Nov 7 02:07 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e116]:
+            - generic [ref=e117]:
+              - generic [ref=e118]: command
+              - text: commit-coach:commit
+            - generic [ref=e119]: Nov 7 02:03 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e120]:
+            - generic [ref=e121]:
+              - generic [ref=e122]: mcp
+              - text: mcp__issue-tracker__create_issue
+            - generic [ref=e123]: Nov 6 08:19 AM · (loose, ~/code/webapp) · ~/code/api-service
+          - listitem [ref=e124]:
+            - generic [ref=e125]:
+              - generic [ref=e126]: command
+              - text: standup-notes
+            - generic [ref=e127]: Nov 6 08:15 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e128]:
+            - generic [ref=e129]:
+              - generic [ref=e130]: command
+              - text: commit-coach:commit
+            - generic [ref=e131]: Nov 6 08:11 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e132]:
+            - generic [ref=e133]:
+              - generic [ref=e134]: mcp
+              - text: mcp__claude_ai_Google_Drive__search_files
+            - generic [ref=e135]: Nov 6 08:07 AM · claude.ai Google Drive · ~/code/api-service
+          - listitem [ref=e136]:
+            - generic [ref=e137]:
+              - generic [ref=e138]: skill
+              - text: doc-writer:docstring
+            - generic [ref=e139]: Nov 6 08:03 AM · doc-writer@acme-plugins · ~/code/api-service
+          - listitem [ref=e140]:
+            - generic [ref=e141]:
+              - generic [ref=e142]: command
+              - text: commit-coach:commit
+            - generic [ref=e143]: Nov 5 10:19 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e144]:
+            - generic [ref=e145]:
+              - generic [ref=e146]: mcp
+              - text: mcp__claude_ai_Google_Drive__search_files
+            - generic [ref=e147]: Nov 5 10:15 AM · claude.ai Google Drive · ~/code/webapp
+          - listitem [ref=e148]:
+            - generic [ref=e149]:
+              - generic [ref=e150]: command
+              - text: standup-notes
+            - generic [ref=e151]: Nov 5 10:11 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e152]:
+            - generic [ref=e153]:
+              - generic [ref=e154]: mcp
+              - text: mcp__claude_ai_Google_Drive__search_files
+            - generic [ref=e155]: Nov 5 10:07 AM · claude.ai Google Drive · ~/code/webapp
+          - listitem [ref=e156]:
+            - generic [ref=e157]:
+              - generic [ref=e158]: skill
+              - text: commit-coach:commit
+            - generic [ref=e159]: Nov 5 10:03 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e160]:
+            - generic [ref=e161]:
+              - generic [ref=e162]: skill
+              - text: doc-writer:docstring
+            - generic [ref=e163]: Nov 5 06:19 AM · doc-writer@acme-plugins · ~/code/webapp
+          - listitem [ref=e164]:
+            - generic [ref=e165]:
+              - generic [ref=e166]: skill
+              - text: commit-coach:commit
+            - generic [ref=e167]: Nov 5 06:15 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e168]:
+            - generic [ref=e169]:
+              - generic [ref=e170]: skill
+              - text: commit-coach:split-commit
+            - generic [ref=e171]: Nov 5 06:11 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e172]:
+            - generic [ref=e173]:
+              - generic [ref=e174]: command
+              - text: standup-notes
+            - generic [ref=e175]: Nov 5 06:07 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e176]:
+            - generic [ref=e177]:
+              - generic [ref=e178]: mcp
+              - text: mcp__issue-tracker__create_issue
+            - generic [ref=e179]: Nov 5 06:03 AM · (loose, ~/code/webapp) · ~/code/webapp
+          - listitem [ref=e180]:
+            - generic [ref=e181]:
+              - generic [ref=e182]: skill
+              - text: commit-coach:commit
+            - generic [ref=e183]: Nov 5 04:07 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e184]:
+            - generic [ref=e185]:
+              - generic [ref=e186]: command
+              - text: standup-notes
+            - generic [ref=e187]: Nov 5 04:03 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e188]:
+            - generic [ref=e189]:
+              - generic [ref=e190]: command
+              - text: standup-notes
+            - generic [ref=e191]: Nov 4 08:07 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e192]:
+            - generic [ref=e193]:
+              - generic [ref=e194]: skill
+              - text: commit-coach:commit
+            - generic [ref=e195]: Nov 4 08:03 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e196]:
+            - generic [ref=e197]:
+              - generic [ref=e198]: mcp
+              - text: mcp__issue-tracker__create_issue
+            - generic [ref=e199]: Nov 4 04:27 AM · (loose, ~/code/webapp) · ~/code/webapp
+          - listitem [ref=e200]:
+            - generic [ref=e201]:
+              - generic [ref=e202]: command
+              - text: standup-notes
+            - generic [ref=e203]: Nov 4 04:23 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e204]:
+            - generic [ref=e205]:
+              - generic [ref=e206]: mcp
+              - text: mcp__deploykit__create_preview
+            - generic [ref=e207]: Nov 4 04:19 AM · deploy-pilot@cloudkit · ~/code/webapp
+          - listitem [ref=e208]:
+            - generic [ref=e209]:
+              - generic [ref=e210]: command
+              - text: standup-notes
+            - generic [ref=e211]: Nov 4 04:15 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e212]:
+            - generic [ref=e213]:
+              - generic [ref=e214]: skill
+              - text: commit-coach:commit
+            - generic [ref=e215]: Nov 4 04:11 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e216]:
+            - generic [ref=e217]:
+              - generic [ref=e218]: command
+              - text: standup-notes
+            - generic [ref=e219]: Nov 4 04:07 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e220]:
+            - generic [ref=e221]:
+              - generic [ref=e222]: mcp
+              - text: mcp__claude_ai_Google_Drive__search_files
+            - generic [ref=e223]: Nov 4 04:03 AM · claude.ai Google Drive · ~/code/webapp
+          - listitem [ref=e224]:
+            - generic [ref=e225]:
+              - generic [ref=e226]: skill
+              - text: pr-summary
+            - generic [ref=e227]: Nov 3 09:35 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e228]:
+            - generic [ref=e229]:
+              - generic [ref=e230]: command
+              - text: standup-notes
+            - generic [ref=e231]: Nov 3 09:31 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e232]:
+            - generic [ref=e233]:
+              - generic [ref=e234]: command
+              - text: commit-coach:commit
+            - generic [ref=e235]: Nov 3 09:27 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e236]:
+            - generic [ref=e237]:
+              - generic [ref=e238]: skill
+              - text: commit-coach:commit
+            - generic [ref=e239]: Nov 3 09:23 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e240]:
+            - generic [ref=e241]:
+              - generic [ref=e242]: skill
+              - text: commit-coach:commit
+            - generic [ref=e243]: Nov 3 09:19 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e244]:
+            - generic [ref=e245]:
+              - generic [ref=e246]: command
+              - text: standup-notes
+            - generic [ref=e247]: Nov 3 09:15 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e248]:
+            - generic [ref=e249]:
+              - generic [ref=e250]: mcp
+              - text: mcp__issue-tracker__get_issue
+            - generic [ref=e251]: Nov 3 09:15 AM · (loose, ~/code/webapp) · ~/code/webapp
+          - listitem [ref=e252]:
+            - generic [ref=e253]:
+              - generic [ref=e254]: mcp
+              - text: mcp__issue-tracker__get_issue
+            - generic [ref=e255]: Nov 3 09:11 AM · (loose, ~/code/webapp) · ~/code/api-service
+          - listitem [ref=e256]:
+            - generic [ref=e257]:
+              - generic [ref=e258]: mcp
+              - text: mcp__issue-tracker__create_issue
+            - generic [ref=e259]: Nov 3 09:11 AM · (loose, ~/code/webapp) · ~/code/webapp
+          - listitem [ref=e260]:
+            - generic [ref=e261]:
+              - generic [ref=e262]: command
+              - text: standup-notes
+            - generic [ref=e263]: Nov 3 09:07 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e264]:
+            - generic [ref=e265]:
+              - generic [ref=e266]: command
+              - text: deploy-pilot:deploy
+            - generic [ref=e267]: Nov 3 09:07 AM · deploy-pilot@cloudkit · ~/code/webapp
+          - listitem [ref=e268]:
+            - generic [ref=e269]:
+              - generic [ref=e270]: mcp
+              - text: mcp__deploykit__status
+            - generic [ref=e271]: Nov 3 09:03 AM · deploy-pilot@cloudkit · ~/code/api-service
+          - listitem [ref=e272]:
+            - generic [ref=e273]:
+              - generic [ref=e274]: skill
+              - text: doc-writer:docstring
+            - generic [ref=e275]: Nov 3 09:03 AM · doc-writer@acme-plugins · ~/code/webapp
+          - listitem [ref=e276]:
+            - generic [ref=e277]:
+              - generic [ref=e278]: skill
+              - text: pr-summary
+            - generic [ref=e279]: Nov 3 05:31 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e280]:
+            - generic [ref=e281]:
+              - generic [ref=e282]: skill
+              - text: doc-writer:docstring
+            - generic [ref=e283]: Nov 3 05:27 AM · doc-writer@acme-plugins · ~/code/webapp
+          - listitem [ref=e284]:
+            - generic [ref=e285]:
+              - generic [ref=e286]: command
+              - text: commit-coach:commit
+            - generic [ref=e287]: Nov 3 05:23 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e288]:
+            - generic [ref=e289]:
+              - generic [ref=e290]: command
+              - text: deploy-pilot:deploy
+            - generic [ref=e291]: Nov 3 05:19 AM · deploy-pilot@cloudkit · ~/code/webapp
+      - generic [ref=e292]:
+        - generic [ref=e293]:
+          - button "Sources" [ref=e294] [cursor=pointer]
+          - button "Skills" [ref=e295] [cursor=pointer]
+          - button "MCP servers" [ref=e296] [cursor=pointer]
+          - button "Removed" [ref=e297] [cursor=pointer]
+          - searchbox "Filter rows" [ref=e298]
+        - table [ref=e300]:
+          - rowgroup [ref=e301]:
+            - row [ref=e302]:
+              - columnheader "Source i" [ref=e303] [cursor=pointer]:
+                - text: Source
+                - generic [ref=e304]: i
+              - columnheader "Verdict i" [ref=e305] [cursor=pointer]:
+                - text: Verdict
+                - generic [ref=e306]: i
+              - columnheader "Worst risk i" [ref=e307] [cursor=pointer]:
+                - text: Worst risk
+                - generic [ref=e308]: i
+              - columnheader "Scope i" [ref=e309] [cursor=pointer]:
+                - text: Scope
+                - generic [ref=e310]: i
+              - columnheader "Contents i" [ref=e311] [cursor=pointer]:
+                - text: Contents
+                - generic [ref=e312]: i
+              - columnheader "Invoked i ↓" [ref=e313] [cursor=pointer]:
+                - text: Invoked
+                - generic [ref=e314]: i
+                - text: ↓
+              - columnheader "Hook runs i" [ref=e315] [cursor=pointer]:
+                - text: Hook runs
+                - generic [ref=e316]: i
+              - columnheader "Last used i" [ref=e317] [cursor=pointer]:
+                - text: Last used
+                - generic [ref=e318]: i
+              - columnheader "~Tokens i" [ref=e319] [cursor=pointer]:
+                - text: ~Tokens
+                - generic [ref=e320]: i
+          - rowgroup [ref=e321]:
+            - row [ref=e322] [cursor=pointer]:
+              - cell "commit-coach@devtools-market" [ref=e323]
+              - cell "invoked (1/3 idle)" [ref=e324]
+              - cell "12 SAFE" [ref=e326]
+              - cell "user" [ref=e328]
+              - cell "3 skills, 1 hook" [ref=e329]
+              - cell "91" [ref=e330]
+              - cell "121" [ref=e331]
+              - cell "2026-11-09" [ref=e332]
+              - cell "42" [ref=e333]
+            - row [ref=e334] [cursor=pointer]:
+              - cell "deploy-pilot@cloudkit" [ref=e335]
+              - cell "invoked (1/3 idle)" [ref=e336]
+              - cell "63 DO NOT INSTALL" [ref=e338]
+              - cell "project ~/code/webapp" [ref=e340]
+              - cell "2 skills, 1 mcp" [ref=e341]
+              - cell "42" [ref=e342]
+              - cell [ref=e343]
+              - cell "2026-11-07" [ref=e344]
+              - cell "23" [ref=e345]
+            - row [ref=e346] [cursor=pointer]:
+              - cell "(loose, user)" [ref=e347]
+              - cell "invoked" [ref=e348]
+              - cell "0 SAFE" [ref=e350]
+              - cell "user" [ref=e352]
+              - cell "2 skills" [ref=e353]
+              - cell "38" [ref=e354]
+              - cell [ref=e355]
+              - cell "2026-11-08" [ref=e356]
+              - cell "25" [ref=e357]
+            - row [ref=e358] [cursor=pointer]:
+              - cell "(loose, ~/code/webapp)" [ref=e359]
+              - cell "invoked" [ref=e360]
+              - cell "8 CAUTION" [ref=e362]
+              - cell "project ~/code/webapp" [ref=e364]
+              - cell "1 skill, 2 mcps" [ref=e365]
+              - cell "35" [ref=e366]
+              - cell [ref=e367]
+              - cell "2026-11-08" [ref=e368]
+              - cell "16" [ref=e369]
+            - row [ref=e370] [cursor=pointer]:
+              - cell "doc-writer@acme-plugins" [ref=e371]
+              - cell "invoked (3/4 idle)" [ref=e372]
+              - cell "34 CAUTION" [ref=e374]
+              - cell "user" [ref=e376]
+              - cell "4 skills" [ref=e377]
+              - cell "12" [ref=e378]
+              - cell [ref=e379]
+              - cell "2026-11-06" [ref=e380]
+              - cell "49" [ref=e381]
+            - row [ref=e382] [cursor=pointer]:
+              - cell "lint-guard@devtools-market" [ref=e383]
+              - cell "active (hooks only)" [ref=e384]
+              - cell [ref=e386]
+              - cell "user" [ref=e387]
+              - cell "2 hooks" [ref=e388]
+              - cell [ref=e389]
+              - cell "180" [ref=e390]
+              - cell "2026-11-09" [ref=e391]
+              - cell [ref=e392]
+            - row [ref=e393] [cursor=pointer]:
+              - cell "focus-mode@ui-mods" [ref=e394]
+              - cell "unknown (UI mod)" [ref=e395]
+              - cell [ref=e397]
+              - cell "user" [ref=e398]
+              - cell "1 mod" [ref=e399]
+              - cell [ref=e400]
+              - cell [ref=e401]
+              - cell "never" [ref=e402]
+              - cell [ref=e403]
+            - row [ref=e404] [cursor=pointer]:
+              - cell "prompt-library@community-hub" [ref=e405]
+              - cell "UNUSED" [ref=e406]
+              - cell "88 DO NOT INSTALL" [ref=e408]
+              - cell "user" [ref=e410]
+              - cell "12 skills" [ref=e411]
+              - cell [ref=e412]
+              - cell [ref=e413]
+              - cell "never" [ref=e414]
+              - cell "280" [ref=e415]
+            - row [ref=e416] [cursor=pointer]:
+              - cell "sql-helper@datatools" [ref=e417]
+              - cell "disabled" [ref=e418]
+              - cell "0 SAFE" [ref=e420]
+              - cell "user [disabled]" [ref=e422]
+              - cell "2 skills" [ref=e423]
+              - cell [ref=e424]
+              - cell [ref=e425]
+              - cell "never" [ref=e426]
+              - cell "28" [ref=e427]
+    - paragraph [ref=e428]:
+      - text: This auditor has used 0 LLM tokens.
+      - generic [ref=e429]: i
+  - complementary [aria-hidden] [ref=e430]
