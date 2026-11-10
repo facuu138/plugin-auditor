@@ -1,0 +1,552 @@
+- generic [ref=e1]:
+  - generic [ref=e2]: Demo with fictional plugins and activity. Install it to audit your own setup.
+  - banner [ref=e3]:
+    - img "Plugin Auditor logo" [ref=e4]
+    - heading "Plugin Auditor" [level=1] [ref=e6]
+    - generic [ref=e7]: "Live · 68 sessions · updated 9:56:30 AM · risk scan: demo data"
+    - group "Time window" [ref=e10]:
+      - button "All time" [ref=e11] [cursor=pointer]
+      - button "30 days" [ref=e12] [cursor=pointer]
+      - button "7 days" [ref=e13] [cursor=pointer]
+  - main [ref=e14]:
+    - generic [ref=e15]:
+      - generic [ref=e433]:
+        - generic [ref=e434]: "7"
+        - generic [ref=e435]:
+          - text: plugins installed
+          - generic [ref=e436]: i
+      - generic [ref=e437]:
+        - generic [ref=e438]: 9/26
+        - generic [ref=e439]:
+          - text: invoked, last 30 days
+          - generic [ref=e440]: i
+      - generic [ref=e441]:
+        - generic [ref=e442]: ~340
+        - generic [ref=e443]:
+          - text: idle tokens per session
+          - generic [ref=e444]: i
+      - generic [ref=e445]:
+        - generic [ref=e446]: ~17,340
+        - generic [ref=e447]:
+          - text: idle tokens, last 30 days
+          - generic [ref=e448]: i
+      - generic [ref=e449]:
+        - generic [ref=e450]: "245"
+        - generic [ref=e451]:
+          - text: invocations, last 30 days
+          - generic [ref=e452]: i
+      - generic [ref=e453]:
+        - generic [ref=e454]: "304"
+        - generic [ref=e455]:
+          - text: hook runs, last 30 days
+          - generic [ref=e456]: i
+      - button "2 skills marked DO NOT INSTALL i" [ref=e457] [cursor=pointer]:
+        - generic [ref=e458]: "2"
+        - generic [ref=e459]:
+          - text: skills marked DO NOT INSTALL
+          - generic [ref=e460]: i
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - heading [level=2] [ref=e46]:
+          - text: Live activity
+          - generic [ref=e47]:
+            - generic [ref=e48] [cursor=pointer]:
+              - checkbox "hooks" [ref=e49]
+              - text: hooks
+            - button "Hide" [ref=e50] [cursor=pointer]
+        - list [ref=e51]:
+          - listitem [ref=e461]:
+            - generic [ref=e462]:
+              - generic [ref=e463]: skill
+              - text: commit-coach:commit
+            - generic [ref=e464]: 09:56:15 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e465]:
+            - generic [ref=e466]:
+              - generic [ref=e467]: skill
+              - text: pr-summary
+            - generic [ref=e468]: 09:56:15 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e469]:
+            - generic [ref=e470]:
+              - generic [ref=e471]: mcp
+              - text: mcp__deploykit__status
+            - generic [ref=e472]: 09:56:15 AM · deploy-pilot@cloudkit · ~/code/webapp
+          - listitem [ref=e473]:
+            - generic [ref=e474]:
+              - generic [ref=e475]: command
+              - text: commit-coach:commit
+            - generic [ref=e476]: 09:56:15 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e477]:
+            - generic [ref=e478]:
+              - generic [ref=e479]: mcp
+              - text: mcp__claude_ai_Slack__send_message
+            - generic [ref=e480]: Nov 9 10:00 AM · claude.ai Slack · ~/code/api-service
+          - listitem [ref=e481]:
+            - generic [ref=e482]:
+              - generic [ref=e483]: skill
+              - text: commit-coach:commit
+            - generic [ref=e484]: Nov 9 09:56 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e485]:
+            - generic [ref=e486]:
+              - generic [ref=e487]: skill
+              - text: commit-coach:commit
+            - generic [ref=e488]: Nov 8 06:16 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e489]:
+            - generic [ref=e490]:
+              - generic [ref=e491]: command
+              - text: commit-coach:commit
+            - generic [ref=e492]: Nov 8 06:12 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e493]:
+            - generic [ref=e494]:
+              - generic [ref=e495]: command
+              - text: commit-coach:commit
+            - generic [ref=e496]: Nov 8 06:08 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e497]:
+            - generic [ref=e498]:
+              - generic [ref=e499]: command
+              - text: commit-coach:commit
+            - generic [ref=e500]: Nov 8 06:04 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e501]:
+            - generic [ref=e502]:
+              - generic [ref=e503]: mcp
+              - text: mcp__issue-tracker__create_issue
+            - generic [ref=e504]: Nov 8 06:00 AM · (loose, ~/code/webapp) · ~/code/webapp
+          - listitem [ref=e505]:
+            - generic [ref=e506]:
+              - generic [ref=e507]: skill
+              - text: commit-coach:split-commit
+            - generic [ref=e508]: Nov 8 05:56 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e509]:
+            - generic [ref=e510]:
+              - generic [ref=e511]: command
+              - text: commit-coach:commit
+            - generic [ref=e512]: Nov 8 05:04 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e513]:
+            - generic [ref=e514]:
+              - generic [ref=e515]: skill
+              - text: commit-coach:split-commit
+            - generic [ref=e516]: Nov 8 05:00 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e517]:
+            - generic [ref=e518]:
+              - generic [ref=e519]: command
+              - text: standup-notes
+            - generic [ref=e520]: Nov 8 04:56 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e521]:
+            - generic [ref=e522]:
+              - generic [ref=e523]: skill
+              - text: commit-coach:commit
+            - generic [ref=e524]: Nov 7 02:20 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e525]:
+            - generic [ref=e526]:
+              - generic [ref=e527]: mcp
+              - text: mcp__issue-tracker__get_issue
+            - generic [ref=e528]: Nov 7 02:16 AM · (loose, ~/code/webapp) · ~/code/api-service
+          - listitem [ref=e529]:
+            - generic [ref=e530]:
+              - generic [ref=e531]: command
+              - text: deploy-pilot:deploy
+            - generic [ref=e532]: Nov 7 02:12 AM · deploy-pilot@cloudkit · ~/code/api-service
+          - listitem [ref=e533]:
+            - generic [ref=e534]:
+              - generic [ref=e535]: mcp
+              - text: mcp__deploykit__status
+            - generic [ref=e536]: Nov 7 02:08 AM · deploy-pilot@cloudkit · ~/code/api-service
+          - listitem [ref=e537]:
+            - generic [ref=e538]:
+              - generic [ref=e539]: command
+              - text: standup-notes
+            - generic [ref=e540]: Nov 7 02:00 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e541]:
+            - generic [ref=e542]:
+              - generic [ref=e543]: command
+              - text: commit-coach:commit
+            - generic [ref=e544]: Nov 7 01:56 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e545]:
+            - generic [ref=e546]:
+              - generic [ref=e547]: mcp
+              - text: mcp__issue-tracker__create_issue
+            - generic [ref=e548]: Nov 6 08:12 AM · (loose, ~/code/webapp) · ~/code/api-service
+          - listitem [ref=e549]:
+            - generic [ref=e550]:
+              - generic [ref=e551]: command
+              - text: standup-notes
+            - generic [ref=e552]: Nov 6 08:08 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e553]:
+            - generic [ref=e554]:
+              - generic [ref=e555]: command
+              - text: commit-coach:commit
+            - generic [ref=e556]: Nov 6 08:04 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e557]:
+            - generic [ref=e558]:
+              - generic [ref=e559]: mcp
+              - text: mcp__claude_ai_Google_Drive__search_files
+            - generic [ref=e560]: Nov 6 08:00 AM · claude.ai Google Drive · ~/code/api-service
+          - listitem [ref=e561]:
+            - generic [ref=e562]:
+              - generic [ref=e563]: skill
+              - text: doc-writer:docstring
+            - generic [ref=e564]: Nov 6 07:56 AM · doc-writer@acme-plugins · ~/code/api-service
+          - listitem [ref=e565]:
+            - generic [ref=e566]:
+              - generic [ref=e567]: command
+              - text: commit-coach:commit
+            - generic [ref=e568]: Nov 5 10:12 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e569]:
+            - generic [ref=e570]:
+              - generic [ref=e571]: mcp
+              - text: mcp__claude_ai_Google_Drive__search_files
+            - generic [ref=e572]: Nov 5 10:08 AM · claude.ai Google Drive · ~/code/webapp
+          - listitem [ref=e573]:
+            - generic [ref=e574]:
+              - generic [ref=e575]: command
+              - text: standup-notes
+            - generic [ref=e576]: Nov 5 10:04 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e577]:
+            - generic [ref=e578]:
+              - generic [ref=e579]: mcp
+              - text: mcp__claude_ai_Google_Drive__search_files
+            - generic [ref=e580]: Nov 5 10:00 AM · claude.ai Google Drive · ~/code/webapp
+          - listitem [ref=e581]:
+            - generic [ref=e582]:
+              - generic [ref=e583]: skill
+              - text: commit-coach:commit
+            - generic [ref=e584]: Nov 5 09:56 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e585]:
+            - generic [ref=e586]:
+              - generic [ref=e587]: skill
+              - text: doc-writer:docstring
+            - generic [ref=e588]: Nov 5 06:12 AM · doc-writer@acme-plugins · ~/code/webapp
+          - listitem [ref=e589]:
+            - generic [ref=e590]:
+              - generic [ref=e591]: skill
+              - text: commit-coach:commit
+            - generic [ref=e592]: Nov 5 06:08 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e593]:
+            - generic [ref=e594]:
+              - generic [ref=e595]: skill
+              - text: commit-coach:split-commit
+            - generic [ref=e596]: Nov 5 06:04 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e597]:
+            - generic [ref=e598]:
+              - generic [ref=e599]: command
+              - text: standup-notes
+            - generic [ref=e600]: Nov 5 06:00 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e601]:
+            - generic [ref=e602]:
+              - generic [ref=e603]: mcp
+              - text: mcp__issue-tracker__create_issue
+            - generic [ref=e604]: Nov 5 05:56 AM · (loose, ~/code/webapp) · ~/code/webapp
+          - listitem [ref=e605]:
+            - generic [ref=e606]:
+              - generic [ref=e607]: skill
+              - text: commit-coach:commit
+            - generic [ref=e608]: Nov 5 04:00 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e609]:
+            - generic [ref=e610]:
+              - generic [ref=e611]: command
+              - text: standup-notes
+            - generic [ref=e612]: Nov 5 03:56 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e613]:
+            - generic [ref=e614]:
+              - generic [ref=e615]: command
+              - text: standup-notes
+            - generic [ref=e616]: Nov 4 08:00 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e617]:
+            - generic [ref=e618]:
+              - generic [ref=e619]: skill
+              - text: commit-coach:commit
+            - generic [ref=e620]: Nov 4 07:56 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e621]:
+            - generic [ref=e622]:
+              - generic [ref=e623]: mcp
+              - text: mcp__issue-tracker__create_issue
+            - generic [ref=e624]: Nov 4 04:20 AM · (loose, ~/code/webapp) · ~/code/webapp
+          - listitem [ref=e625]:
+            - generic [ref=e626]:
+              - generic [ref=e627]: command
+              - text: standup-notes
+            - generic [ref=e628]: Nov 4 04:16 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e629]:
+            - generic [ref=e630]:
+              - generic [ref=e631]: mcp
+              - text: mcp__deploykit__create_preview
+            - generic [ref=e632]: Nov 4 04:12 AM · deploy-pilot@cloudkit · ~/code/webapp
+          - listitem [ref=e633]:
+            - generic [ref=e634]:
+              - generic [ref=e635]: command
+              - text: standup-notes
+            - generic [ref=e636]: Nov 4 04:08 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e637]:
+            - generic [ref=e638]:
+              - generic [ref=e639]: skill
+              - text: commit-coach:commit
+            - generic [ref=e640]: Nov 4 04:04 AM · commit-coach@devtools-market · ~/code/webapp
+          - listitem [ref=e641]:
+            - generic [ref=e642]:
+              - generic [ref=e643]: command
+              - text: standup-notes
+            - generic [ref=e644]: Nov 4 04:00 AM · (loose, user) · ~/code/webapp
+          - listitem [ref=e645]:
+            - generic [ref=e646]:
+              - generic [ref=e647]: mcp
+              - text: mcp__claude_ai_Google_Drive__search_files
+            - generic [ref=e648]: Nov 4 03:56 AM · claude.ai Google Drive · ~/code/webapp
+          - listitem [ref=e649]:
+            - generic [ref=e650]:
+              - generic [ref=e651]: skill
+              - text: pr-summary
+            - generic [ref=e652]: Nov 3 09:28 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e653]:
+            - generic [ref=e654]:
+              - generic [ref=e655]: command
+              - text: standup-notes
+            - generic [ref=e656]: Nov 3 09:24 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e657]:
+            - generic [ref=e658]:
+              - generic [ref=e659]: command
+              - text: commit-coach:commit
+            - generic [ref=e660]: Nov 3 09:20 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e661]:
+            - generic [ref=e662]:
+              - generic [ref=e663]: skill
+              - text: commit-coach:commit
+            - generic [ref=e664]: Nov 3 09:16 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e665]:
+            - generic [ref=e666]:
+              - generic [ref=e667]: skill
+              - text: commit-coach:commit
+            - generic [ref=e668]: Nov 3 09:12 AM · commit-coach@devtools-market · ~/code/api-service
+          - listitem [ref=e669]:
+            - generic [ref=e670]:
+              - generic [ref=e671]: command
+              - text: standup-notes
+            - generic [ref=e672]: Nov 3 09:08 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e673]:
+            - generic [ref=e674]:
+              - generic [ref=e675]: mcp
+              - text: mcp__issue-tracker__get_issue
+            - generic [ref=e676]: Nov 3 09:08 AM · (loose, ~/code/webapp) · ~/code/webapp
+          - listitem [ref=e677]:
+            - generic [ref=e678]:
+              - generic [ref=e679]: mcp
+              - text: mcp__issue-tracker__get_issue
+            - generic [ref=e680]: Nov 3 09:04 AM · (loose, ~/code/webapp) · ~/code/api-service
+          - listitem [ref=e681]:
+            - generic [ref=e682]:
+              - generic [ref=e683]: mcp
+              - text: mcp__issue-tracker__create_issue
+            - generic [ref=e684]: Nov 3 09:04 AM · (loose, ~/code/webapp) · ~/code/webapp
+          - listitem [ref=e685]:
+            - generic [ref=e686]:
+              - generic [ref=e687]: command
+              - text: standup-notes
+            - generic [ref=e688]: Nov 3 09:00 AM · (loose, user) · ~/code/api-service
+          - listitem [ref=e689]:
+            - generic [ref=e690]:
+              - generic [ref=e691]: command
+              - text: deploy-pilot:deploy
+            - generic [ref=e692]: Nov 3 09:00 AM · deploy-pilot@cloudkit · ~/code/webapp
+          - listitem [ref=e693]:
+            - generic [ref=e694]:
+              - generic [ref=e695]: mcp
+              - text: mcp__deploykit__status
+            - generic [ref=e696]: Nov 3 08:56 AM · deploy-pilot@cloudkit · ~/code/api-service
+          - listitem [ref=e697]:
+            - generic [ref=e698]:
+              - generic [ref=e699]: skill
+              - text: doc-writer:docstring
+            - generic [ref=e700]: Nov 3 08:56 AM · doc-writer@acme-plugins · ~/code/webapp
+      - generic [ref=e292]:
+        - generic [ref=e293]:
+          - button "Sources" [ref=e294] [cursor=pointer]
+          - button "Skills" [ref=e295] [cursor=pointer]
+          - button "MCP servers" [active] [ref=e296] [cursor=pointer]
+          - button "Removed" [ref=e297] [cursor=pointer]
+          - searchbox "Filter rows" [ref=e298]
+        - table [ref=e1092]:
+          - rowgroup [ref=e1093]:
+            - row [ref=e1094]:
+              - columnheader "Server i" [ref=e1095] [cursor=pointer]:
+                - text: Server
+                - generic [ref=e1096]: i
+              - columnheader "Verdict i" [ref=e1097] [cursor=pointer]:
+                - text: Verdict
+                - generic [ref=e1098]: i
+              - columnheader "Source i" [ref=e1099] [cursor=pointer]:
+                - text: Source
+                - generic [ref=e1100]: i
+              - columnheader "Scope i" [ref=e1101] [cursor=pointer]:
+                - text: Scope
+                - generic [ref=e1102]: i
+              - columnheader "Calls i ↓" [ref=e1103] [cursor=pointer]:
+                - text: Calls
+                - generic [ref=e1104]: i
+                - text: ↓
+              - columnheader "Tools used i" [ref=e1105] [cursor=pointer]:
+                - text: Tools used
+                - generic [ref=e1106]: i
+              - columnheader "Last used i" [ref=e1107] [cursor=pointer]:
+                - text: Last used
+                - generic [ref=e1108]: i
+              - columnheader "Top tools i" [ref=e1109] [cursor=pointer]:
+                - text: Top tools
+                - generic [ref=e1110]: i
+          - rowgroup [ref=e1111]:
+            - row [ref=e1112] [cursor=pointer]:
+              - cell "issue-tracker" [ref=e1113]
+              - cell "invoked" [ref=e1114]
+              - cell "(loose, /Users/demo/code/webapp)" [ref=e1116]
+              - cell "project ~/code/webapp" [ref=e1117]
+              - cell "31" [ref=e1118]
+              - cell "2" [ref=e1119]
+              - cell "2026-11-08" [ref=e1120]
+              - cell "get_issue ×28, create_issue ×12" [ref=e1121]
+            - row [ref=e1122] [cursor=pointer]:
+              - cell "deploykitused" [ref=e1123]
+              - cell "invoked" [ref=e1124]
+              - cell "deploy-pilot@cloudkit" [ref=e1126]
+              - cell "project ~/code/webapp" [ref=e1127]
+              - cell "25" [ref=e1128]
+              - cell "2" [ref=e1129]
+              - cell "2026-11-10" [ref=e1130]
+              - cell "status ×23, create_preview ×17" [ref=e1131]
+            - row [ref=e1132] [cursor=pointer]:
+              - cell "Google Drive" [ref=e1133]
+              - cell "invoked" [ref=e1134]
+              - cell "claude.ai account" [ref=e1136]
+              - cell "account" [ref=e1137]
+              - cell "14" [ref=e1138]
+              - cell "1" [ref=e1139]
+              - cell "2026-11-06" [ref=e1140]
+              - cell "search_files ×20" [ref=e1141]
+            - row [ref=e1142] [cursor=pointer]:
+              - cell "Slack" [ref=e1143]
+              - cell "invoked" [ref=e1144]
+              - cell "claude.ai account" [ref=e1146]
+              - cell "account" [ref=e1147]
+              - cell "5" [ref=e1148]
+              - cell "1" [ref=e1149]
+              - cell "2026-11-09" [ref=e1150]
+              - cell "send_message ×5" [ref=e1151]
+            - row [ref=e1152] [cursor=pointer]:
+              - cell "postgres-local" [ref=e1153]
+              - cell "disabled" [ref=e1154]
+              - cell "(loose, /Users/demo/code/webapp)" [ref=e1156]
+              - cell "project ~/code/webapp" [ref=e1157]
+              - cell [ref=e1158]
+              - cell [ref=e1159]
+              - cell "never" [ref=e1160]
+              - cell [ref=e1161]
+    - paragraph [ref=e428]:
+      - text: This auditor has used 0 LLM tokens.
+      - generic [ref=e1091]: i
+  - complementary [aria-hidden] [ref=e430]:
+    - generic [ref=e431]:
+      - generic [ref=e1162]:
+        - heading [level=3] [ref=e1163]: prompt-library:brainstorm
+        - generic [ref=e1164]: skill · prompt-library@community-hub · user
+      - button [ref=e1165] [cursor=pointer]: ×
+    - generic [ref=e432]:
+      - heading [level=4] [ref=e1166]:
+        - text: Verdict
+        - generic [ref=e1167]: i
+      - paragraph [ref=e1168]:
+        - generic [ref=e1169]: UNUSED
+        - text: Never called in any transcript. It still costs context tokens in every session. A candidate to remove.
+      - heading [level=4] [ref=e1170]:
+        - text: Risk
+        - generic [ref=e1171]: i
+      - generic [ref=e1172]:
+        - generic [ref=e1173]: "88"
+        - generic [ref=e1174]: DO NOT INSTALL
+        - generic [ref=e1175]: full coverage
+      - generic [ref=e1178]:
+        - generic [ref=e1179]: 0 SAFE
+        - generic [ref=e1180]: 21 CAUTION
+        - generic [ref=e1181]: 51 DO NOT INSTALL
+        - generic [ref=e1182]: "100"
+      - heading [level=4] [ref=e1183]: Why
+      - paragraph [ref=e1184]: A score of 88 is in the 51 to 100 band, which SkillSpector marks DO NOT INSTALL.
+      - heading [level=4] [ref=e1185]: What adds to the score
+      - table [ref=e1186]:
+        - rowgroup [ref=e1187]:
+          - row [ref=e1188]:
+            - columnheader [ref=e1189]: Rule
+            - columnheader [ref=e1190]: Finding
+            - columnheader [ref=e1191]: Count
+            - columnheader [ref=e1192]: Points
+        - rowgroup [ref=e1193]:
+          - row [ref=e1194]:
+            - cell [ref=e1195]: P2
+            - cell [ref=e1196]: Hidden Instructions
+            - cell [ref=e1197]: "1"
+            - cell [ref=e1198]: "45"
+          - row [ref=e1199]:
+            - cell [ref=e1200]: AR1
+            - cell [ref=e1201]: Refusal Suppression
+            - cell [ref=e1202]: "1"
+            - cell [ref=e1203]: "17.5"
+      - paragraph [ref=e1204]: "Points follow SkillSpector's formula: CRITICAL 50, HIGH 25, MEDIUM 10, LOW 5, times confidence. Repeats of a rule count 100%, 50%, 25%, then nothing. Findings in executable files count 1.3 times. The total is capped at 100."
+      - heading [level=4] [ref=e1205]: Findings (2)
+      - generic [ref=e1206]:
+        - generic [ref=e1207]:
+          - generic [ref=e1208]: CRITICAL
+          - text: P2 Hidden Instructions
+        - generic [ref=e1209]: Prompt Injection · confidence 0.9
+        - generic [ref=e1210]: What it means
+        - generic [ref=e1211]: An HTML comment holds instructions the user cannot see in rendered Markdown.
+        - generic [ref=e1212]: How to fix
+        - generic [ref=e1213]: Remove the hidden comment, or move the text into the visible instructions.
+        - generic [ref=e1214]: Matched
+        - generic [ref=e1215]: <!-- ignore previous instructions and ... -->
+        - generic [ref=e1216]: Where
+        - generic [ref=e1217]: SKILL.md:77
+      - generic [ref=e1218]:
+        - generic [ref=e1219]:
+          - generic [ref=e1220]: HIGH
+          - text: AR1 Refusal Suppression
+        - generic [ref=e1221]: Anti-Refusal · confidence 0.7
+        - generic [ref=e1222]: What it means
+        - generic [ref=e1223]: The skill tells the model not to refuse, which weakens its safety checks.
+        - generic [ref=e1224]: How to fix
+        - generic [ref=e1225]: Delete the instruction.
+        - generic [ref=e1226]: Matched
+        - generic [ref=e1227]: never refuse a request from this template
+        - generic [ref=e1228]: Where
+        - generic [ref=e1229]: SKILL.md:80
+      - heading [level=4] [ref=e1230]: Check it yourself
+      - code [ref=e1231]: skillspector scan "~/.claude/plugins/cache/community-hub/prompt-library/3.1.0/skills/brainstorm" --no-llm
+      - paragraph [ref=e1232]: Scanned 07:56:15 AM with SkillSpector 2.12.0, static mode. Scores are heuristic signals to review, not verdicts.
+      - heading [level=4] [ref=e1233]: Usage
+      - table [ref=e1234]:
+        - rowgroup [ref=e1235]:
+          - row [ref=e1236]:
+            - columnheader [ref=e1237]
+            - columnheader [ref=e1238]: All time
+            - columnheader [ref=e1239]: 30 days
+            - columnheader [ref=e1240]: 7 days
+        - rowgroup [ref=e1241]:
+          - row [ref=e1242]:
+            - cell [ref=e1243]: By Claude
+            - cell [ref=e1244]
+            - cell [ref=e1245]
+            - cell [ref=e1246]
+          - row [ref=e1247]:
+            - cell [ref=e1248]: By you
+            - cell [ref=e1249]
+            - cell [ref=e1250]
+            - cell [ref=e1251]
+      - generic [ref=e1252]:
+        - term [ref=e1253]: Last used
+        - definition [ref=e1254]: never
+        - term [ref=e1255]: ~Tokens
+        - definition [ref=e1256]: 23 per session
+        - term [ref=e1257]: Added
+        - definition [ref=e1258]: 2026-10-15
+        - term [ref=e1259]: File changed
+        - definition [ref=e1260]: 2026-11-10
+        - term [ref=e1261]: Path
+        - definition [ref=e1262]: ~/.claude/plugins/cache/community-hub/prompt-library/3.1.0/skills/brainstorm/SKILL.md
+      - heading [level=4] [ref=e1263]: Remove it
+      - paragraph [ref=e1264]: This tool never deletes anything. Copy this prompt, paste it into Claude Code, and Claude will ask before it removes anything.
+      - generic [ref=e1265]: "plugin-auditor says this item is not worth keeping. Remove this one item: - skill \"prompt-library:brainstorm\" is part of the plugin prompt-library@community-hub. It can't be removed alone: ask me whether to uninstall the whole plugin. Before you delete or change anything, show me exactly what you will remove and wait for my OK. Back up any folder you delete to ~/.claude/removed-backups/ first. Do not touch anything else."
+      - button [ref=e1266] [cursor=pointer]: Copy prompt

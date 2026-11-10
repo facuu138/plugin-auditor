@@ -42,28 +42,41 @@
   .seg button { border: 0; background: none; color: var(--muted); font: inherit; padding: 6px 12px; cursor: pointer; }
   .seg button + button { border-left: 1px solid var(--line); }
   .seg button.on { background: var(--dim-bg); color: var(--text); font-weight: 500; }
-  main { padding: 8px 24px 32px; }
-  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
-  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  /* The page itself never scrolls: header and tiles stay put, and each panel scrolls on its own. */
+  html, body { height: 100%; }
+  body { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+  header { flex: none; padding: 14px 24px 6px; }
+  main { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 6px 24px 10px; }
+  .tiles { flex: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 12px; }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 9px 14px; }
   .tile.click { cursor: pointer; }
   .tile.click:hover, .tile.on { border-color: var(--accent); }
+  pre.prompt { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--dim-bg); border: 1px solid var(--line); border-radius: 8px;
+               padding: 10px 12px; font-size: 12px; margin: 8px 0; user-select: all; }
   .chip { display: inline-flex; gap: 6px; align-items: center; margin: 8px 16px 0; padding: 3px 10px; border-radius: 999px; font-size: 12px;
           background: var(--bad-bg); color: var(--bad); border: 0; cursor: pointer; font-family: inherit; }
-  .tile .v { font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tile .v { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .tile .k { color: var(--muted); font-size: 12px; margin-top: 2px; }
-  .grid { display: grid; grid-template-columns: minmax(280px, 340px) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .grid { display: grid; grid-template-columns: minmax(280px, 340px) minmax(0, 1fr); gap: 16px; align-items: stretch; flex: 1; min-height: 0; grid-template-rows: minmax(0, 1fr); }
   .grid.nofeed { grid-template-columns: 1fr; }
   .grid.nofeed .feedpanel { display: none; }
   .mini-btn { border: 1px solid var(--line); background: var(--panel); color: var(--muted); font: inherit; font-size: 12px;
               padding: 4px 10px; border-radius: 8px; cursor: pointer; text-transform: none; letter-spacing: 0; }
   .mini-btn:hover { color: var(--text); }
   .mini-btn[hidden], .chip[hidden] { display: none; }
+  @media (max-width: 900px) {
+    body { height: auto; overflow: auto; display: block; }
+    main { display: block; }
+    .grid { display: block; }
+    .grid > .panel { margin-bottom: 12px; max-height: 70vh; }
+  }
   @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+  .panel h2, .tabs { flex: none; }
   .panel h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted);
               margin: 0; padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
   .panel h2 label { text-transform: none; letter-spacing: 0; font-size: 12px; cursor: pointer; }
-  .feed { list-style: none; margin: 0; padding: 0; max-height: 72vh; overflow-y: auto; }
+  .feed { list-style: none; margin: 0; padding: 0; flex: 1; min-height: 0; overflow-y: auto; }
   .feed li { padding: 8px 16px; border-bottom: 1px solid var(--line); transition: background 2s; }
   .feed li.new { background: var(--flash); transition: none; }
   .feed .row1 { display: flex; justify-content: space-between; gap: 8px; }
@@ -78,7 +91,7 @@
   .tabs button.has-used::after, .tabs button.has-updated::after { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-left: 6px; vertical-align: 2px; }
   .tabs button.has-used::after { background: var(--ok); }
   .tabs button.has-updated::after { background: var(--info); }
-  .tablewrap { overflow-x: auto; max-height: 72vh; }
+  .tablewrap { overflow: auto; flex: 1; min-height: 0; }
   table { border-collapse: collapse; width: 100%; }
   th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
   th { position: sticky; top: 0; z-index: 1; background: var(--panel); color: var(--muted); font-weight: 500; font-size: 12px; cursor: pointer; user-select: none; }
@@ -117,7 +130,7 @@
   #drawer .head h3 { margin: 0; font-size: 17px; word-break: break-all; }
   #drawer .head .sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
   #drawer .close { margin-left: auto; border: 0; background: none; font-size: 22px; line-height: 1; color: var(--muted); cursor: pointer; }
-  #drawer .body { padding: 4px 20px 24px; overflow-y: auto; }
+  #drawer .body { padding: 4px 20px 24px; overflow-y: auto; flex: 1; min-height: 0; }
   #drawer h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 20px 0 8px; }
   #drawer p { margin: 6px 0; }
   .kv { display: grid; grid-template-columns: 120px 1fr; gap: 4px 12px; font-size: 13px; margin-top: 10px; }
@@ -136,7 +149,7 @@
   .loc { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--muted); word-break: break-all; }
   .finding .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-top: 8px; }
   details summary { cursor: pointer; color: var(--muted); font-size: 13px; margin: 8px 0; }
-  .foot { color: var(--muted); font-size: 12px; margin-top: 16px; text-align: center; }
+  .foot { flex: none; color: var(--muted); font-size: 12px; margin: 8px 0 0; text-align: center; }
   code.cmd { display: block; padding: 8px 10px; border-radius: 6px; background: var(--dim-bg); font-size: 12px; word-break: break-all; }
 </style>
 </head>
@@ -391,7 +404,7 @@
         const name = c.kind === "mcp" ? c.name : `${i.label.split("@")[0]} (mod tools)`;
         rows.push(add(`mcp|${i.id}|${c.name}`, [name, cell(verdictPill(c.verdict), c.verdict), i.label, home(i.scope_label),
           cUse(c, ["mcp"]), Object.keys(c.by_detail).length, day(c.last_used), cell(`<span class="muted">${esc(top(c.by_detail))}</span>`, top(c.by_detail))],
-          { type: "mcp", name, src: i.label, scope: i.scope_label, usage: c }));
+          { type: "mcp", name, src: i.label, scope: i.scope_label, usage: c, path: c.path }));
       }));
       Object.entries(d.unattributed).forEach(([k, v]) => {
         if (!k.startsWith("claude.ai connector:")) return;
@@ -510,6 +523,46 @@
       <h4>Check it yourself</h4><code class="cmd">skillspector scan "${esc(home(rk.folder))}" --no-llm</code>
       <p class="muted" style="font-size:12px">Scanned ${esc(fmtTime(rk.scanned_at))} with SkillSpector ${esc(rk.version)}, static mode. Scores are heuristic signals to review, not verdicts.</p>`;
   }
+  // ---------- remove prompt ----------
+  // The dashboard never deletes anything. It writes a prompt you paste into Claude Code, which asks before it acts.
+  let rmText = "";
+  const SAFE = "Before you delete or change anything, show me exactly what you will remove and wait for my OK. " +
+    "Back up any folder you delete to ~/.claude/removed-backups/ first. Do not touch anything else.";
+  function removeLine(c, i) {
+    const path = home(c.path);
+    if (c.kind === "mcp") return `- MCP server "${c.name}" (found in ${path}): run \`claude mcp list\` to see its scope, then \`claude mcp remove ${c.name}\` (add --scope if needed).`;
+    if (i.kind === "plugin") return `- ${c.kind} "${c.invoked_as || c.name}" is part of the plugin ${i.label}. It can't be removed alone: ask me whether to uninstall the whole plugin.`;
+    if (c.kind === "skill") return `- skill "${c.invoked_as}": delete the folder ${path.replace(/\/SKILL\.md$/i, "")}.`;
+    if (c.kind === "command" || c.kind === "agent") return `- ${c.kind} "${c.invoked_as}": delete the file ${path}.`;
+    return `- ${c.kind} "${c.name}", defined in ${path}: remove that entry.`;
+  }
+  function removalPrompt(det) {
+    let ask = "";
+    if (det.type === "source") {
+      const { i } = det;
+      if (i.kind === "plugin") {
+        ask = `Uninstall the Claude Code plugin "${i.label}". It is installed at ${i.scope} scope${i.project ? ` for the project ${home(i.project)}` : ""}, at ${home(i.install_path)}. ` +
+          `Use \`claude plugin uninstall ${i.label}\`${i.project ? " from that project folder" : ""}.`;
+      } else {
+        const lines = i.components.map(c => removeLine(c, i)).join("\n");
+        ask = `Remove everything in this group, "${i.label}" (${home(i.scope_label)}):\n${lines}`;
+      }
+    } else if (det.type === "skill") {
+      ask = `Remove this one item:\n${removeLine(det.c, det.i)}`;
+    } else if (det.type === "mcp") {
+      ask = det.src === "claude.ai connector"
+        ? `The claude.ai connector "${det.name}" lives in my claude.ai account, not on disk. Don't try to remove it. Just remind me to turn it off in claude.ai under Settings > Connectors.`
+        : `Remove the MCP server "${det.name}" (found in ${home(det.path || "")}). Run \`claude mcp list\` to see its scope, then \`claude mcp remove ${det.name}\` (add --scope if needed).`;
+    } else return "";
+    return `plugin-auditor says this item is not worth keeping. ${ask}\n\n${SAFE}`;
+  }
+  function removeSection(det) {
+    rmText = removalPrompt(det);
+    if (!rmText) return "";
+    return `<h4>Remove it</h4><p class="muted" style="font-size:12px">This tool never deletes anything. Copy this prompt, paste it into Claude Code, and Claude will ask before it removes anything.</p>
+      <pre class="prompt">${esc(rmText)}</pre><button class="mini-btn" id="copyRm">Copy prompt</button>`;
+  }
+
   function renderDrawer(key) {
     const det = details.get(key);
     if (!det) return false;
@@ -551,9 +604,16 @@
         ${kv([["Last used", esc(fmtTime(det.v.last_used))]])}
         <p class="muted" style="font-size:12px">${det.v.uses > 2 ? "You used it more than a couple of times. If you miss it, reinstall it." : "Barely used, so removing it was probably fine."}</p>`;
     }
+    body += removeSection(det);
     $("dhead").innerHTML = head + `<button class="close" aria-label="Close">×</button>`;
     $("dbody").innerHTML = body;
     $("dhead").querySelector(".close").onclick = closeDrawer;
+    const copy = $("copyRm");
+    if (copy) copy.onclick = async () => {
+      try { await navigator.clipboard.writeText(rmText); copy.textContent = "Copied"; }
+      catch (e) { const r = document.createRange(); r.selectNodeContents(document.querySelector("pre.prompt")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); copy.textContent = "Press Ctrl/Cmd+C"; }
+      setTimeout(() => copy.textContent = "Copy prompt", 2000);
+    };
     $("dbody").querySelectorAll("tr.click").forEach(tr => tr.onclick = () => openDrawer(tr.dataset.sk));
     return true;
   }
