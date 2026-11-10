@@ -378,9 +378,9 @@ def scan(claude_home: Path | None = None) -> list[Source]:
             if c.kind == "mcp" and c.name in off:
                 c.disabled = True
 
-    # Everything in a disabled plugin is off.
+    # Everything in a plugin that is not turned on is off: Claude does not load it, so it is neither unused nor a token cost.
     for s in sources:
-        if s.kind == "plugin" and s.enabled is False:
+        if s.kind == "plugin" and s.enabled is not True:
             for c in s.components:
                 c.disabled = True
 

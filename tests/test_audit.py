@@ -47,7 +47,7 @@ def make_home(tmp: Path) -> tuple[Path, Path]:
         "hooky@m": [{"scope": "user", "installPath": str(hooky), "installedAt": "2026-01-01T00:00:00Z"}],
         "mixed@m": [{"scope": "user", "installPath": str(mixed), "installedAt": "2026-01-01T00:00:00Z"}],
     }}))
-    write(home / "settings.json", json.dumps({"enabledPlugins": {"used@m": True, "hooky@m": True}}))
+    write(home / "settings.json", json.dumps({"enabledPlugins": {"used@m": True, "hooky@m": True, "mixed@m": True}}))
     write(proj / ".claude/settings.json", json.dumps({"enabledPlugins": {"idle@m": False}}))
     write(proj / ".claude/skills/local/SKILL.md", skill("local", "A repo skill"))
     write(home / "skills/.trash/x/old/SKILL.md", skill("old", "deleted"))
@@ -465,3 +465,13 @@ def test_claude_config_dir_is_honored(tmp_path, monkeypatch):
     assert default_home() == tmp_path / "custom"
     monkeypatch.delenv("CLAUDE_CONFIG_DIR")
     assert default_home() == Path.home() / ".claude"
+
+
+def test_plugin_without_enabled_entry_is_not_loaded(tmp_path):
+    home, _ = make_home(tmp_path)
+    write(home / "settings.json", json.dumps({"enabledPlugins": {"used@m": True}}))  # mixed@m and hooky@m: no entry
+    by_id = {s.id: s for s in scan(home) if s.kind == "plugin"}
+    mixed = next(s for i, s in by_id.items() if i.startswith("mixed@m"))
+    used = next(s for i, s in by_id.items() if i.startswith("used@m"))
+    assert mixed.enabled is None and all(c.disabled for c in mixed.components)
+    assert used.enabled and not any(c.disabled for c in used.components)
