@@ -45,9 +45,19 @@
   main { padding: 8px 24px 32px; }
   .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
   .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .tile.click { cursor: pointer; }
+  .tile.click:hover, .tile.on { border-color: var(--accent); }
+  .chip { display: inline-flex; gap: 6px; align-items: center; margin: 8px 16px 0; padding: 3px 10px; border-radius: 999px; font-size: 12px;
+          background: var(--bad-bg); color: var(--bad); border: 0; cursor: pointer; font-family: inherit; }
   .tile .v { font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .tile .k { color: var(--muted); font-size: 12px; margin-top: 2px; }
   .grid { display: grid; grid-template-columns: minmax(280px, 340px) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .grid.nofeed { grid-template-columns: 1fr; }
+  .grid.nofeed .feedpanel { display: none; }
+  .mini-btn { border: 1px solid var(--line); background: var(--panel); color: var(--muted); font: inherit; font-size: 12px;
+              padding: 4px 10px; border-radius: 8px; cursor: pointer; text-transform: none; letter-spacing: 0; }
+  .mini-btn:hover { color: var(--text); }
+  .mini-btn[hidden], .chip[hidden] { display: none; }
   @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
   .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
   .panel h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted);
@@ -135,6 +145,7 @@
   <svg class="logo" viewBox="0 26 120 60" role="img" aria-label="Plugin Auditor logo"><path d="M6 60L40 60L50 76L52.82 64.73L54.91 56.36L60 36L70 60L114 60" fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>
   <h1>Plugin Auditor</h1>
   <div class="status"><span class="dot" id="dot"></span><span id="status">Connecting...</span></div>
+  <button class="mini-btn" id="showFeed" hidden>Show live activity</button>
   <div class="seg" id="window" role="group" aria-label="Time window">
     <button data-w="all">All time</button><button data-w="30d" class="on">30 days</button><button data-w="7d">7 days</button>
   </div>
@@ -142,8 +153,8 @@
 <main>
   <section class="tiles" id="tiles"></section>
   <div class="grid">
-    <section class="panel">
-      <h2>Live activity <label><input type="checkbox" id="hooks"> hooks</label></h2>
+    <section class="panel feedpanel">
+      <h2>Live activity <span><label><input type="checkbox" id="hooks"> hooks</label> <button class="mini-btn" id="hideFeed" title="Hide this pane">Hide</button></span></h2>
       <ul class="feed" id="feed"></ul>
     </section>
     <section class="panel">
@@ -154,6 +165,7 @@
         <button data-tab="other">Removed</button>
         <input id="filter" type="search" placeholder="Filter" aria-label="Filter rows">
       </div>
+      <button class="chip" id="chip" hidden>Showing only DO NOT INSTALL skills ×</button>
       <div class="tablewrap" id="table"></div>
     </section>
   </div>
@@ -164,7 +176,7 @@
 <aside id="drawer" aria-hidden="true"><div class="head" id="dhead"></div><div class="body" id="dbody"></div></aside>
 <script>
 (() => {
-  let data = null, tab = "sources", win = "30d", sort = null, seenFeed = new Set(), firstLoad = true, openKey = null;
+  let data = null, tab = "sources", win = "30d", sort = null, seenFeed = new Set(), firstLoad = true, openKey = null, flaggedOnly = false;
   const LIT_MS = 10000;
   let prevSnap = null;          // key -> {tab, uses, sig} from the previous update
   const lit = new Map();        // key -> {type: "used" | "updated", at: ms}
@@ -303,9 +315,9 @@
       [`~${(idleTokens * sessions).toLocaleString()}`, `idle tokens, ${w}`, `Idle tokens per session times the ${sessions} sessions started in the window. What unused items cost you in context.`],
       [calls.toLocaleString(), `invocations, ${w}`, "Calls to skills, commands, agents, and MCP tools, by Claude or you."],
       [hookRuns.toLocaleString(), `hook runs, ${w}`, "Times plugin hooks ran by themselves. Not counted as use."],
-      [flagged, "skills marked DO NOT INSTALL", "Skills with a SkillSpector score of 51 or more. Open the Skills tab and click one to see why."],
+      [flagged, "skills marked DO NOT INSTALL", "Skills with a SkillSpector score of 51 or more. Click to list only these skills.", "flagged"],
     ];
-    $("tiles").innerHTML = t.map(([v, k, tipText]) => `<div class="tile"><div class="v">${esc(v)}</div><div class="k">${esc(k)}<i class="itip" tabindex="0" data-tip="${esc(tipText)}">i</i></div></div>`).join("");
+    $("tiles").innerHTML = t.map(([v, k, tipText, act]) => `<div class="tile${act && v ? " click" : ""}${act && flaggedOnly ? " on" : ""}"${act && v ? ` data-act="${act}" role="button" tabindex="0"` : ""}><div class="v">${esc(v)}</div><div class="k">${esc(k)}<i class="itip" tabindex="0" data-tip="${esc(tipText)}">i</i></div></div>`).join("");
   }
 
   // ---------- live feed ----------
@@ -410,6 +422,7 @@
   function table(d) {
     let { cols, rows, defaultSort } = rowsFor(d);
     const q = $("filter").value.trim().toLowerCase();
+    if (flaggedOnly) rows = rows.filter(r => { const c = (details.get(r.key) || {}).c; return c && c.risk && !c.risk.error && c.risk.score >= 51; });
     if (q) rows = rows.filter(r => r.some(c => String(plain(c)).toLowerCase().includes(q)));
     const s = sort && sort.tab === tab ? sort : { col: defaultSort, dir: -1, tab };
     rows.sort((a, b) => {
@@ -596,8 +609,19 @@
       `<i class="itip" tabindex="0" data-tip="${esc(`It only reads local files: transcripts, plugin folders, and settings. The ${tok.scans} SkillSpector scans ran in static mode (--no-llm), so no model was called. The usage hook prints nothing, so it adds nothing to Claude's context.`)}">i</i>`;
     $("status").textContent = `Live · ${d.sessions.count} sessions · updated ${new Date(d.generated_at).toLocaleTimeString()}${risk}`;
   }
+  // The "DO NOT INSTALL" tile lists only those skills. Clicking it again, the chip, or another tab clears it.
+  function setFlagged(on) {
+    flaggedOnly = on;
+    if (on) { tab = "skills"; syncTabs(); }
+    $("chip").hidden = !on;
+    if (data) { tiles(data); table(data); }
+  }
+  $("tiles").addEventListener("click", e => { if (e.target.closest("[data-act=flagged]")) setFlagged(!flaggedOnly); });
+  $("tiles").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-act=flagged]")) { e.preventDefault(); setFlagged(!flaggedOnly); } });
+  $("chip").onclick = () => setFlagged(false);
   $("tabs").addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
+    if (flaggedOnly) { flaggedOnly = false; $("chip").hidden = true; if (data) tiles(data); }
     tab = b.dataset.tab; syncTabs();
     if (data) table(data);
   });
@@ -608,6 +632,15 @@
     if (data) { tiles(data); table(data); if (openKey) renderDrawer(openKey); }
   });
   $("filter").addEventListener("input", () => data && table(data));
+  // The live activity pane can be hidden. The choice is remembered in this browser.
+  function setFeed(show) {
+    document.querySelector(".grid").classList.toggle("nofeed", !show);
+    $("showFeed").hidden = show;
+    try { localStorage.setItem("cpa-feed", show ? "1" : "0"); } catch (e) {}
+  }
+  $("hideFeed").onclick = () => setFeed(false);
+  $("showFeed").onclick = () => setFeed(true);
+  try { if (localStorage.getItem("cpa-feed") === "0") setFeed(false); } catch (e) {}
   $("hooks").addEventListener("change", () => data && feed(data));
   setInterval(() => { if (pruneLit() && data) table(data); }, 1000);
 
