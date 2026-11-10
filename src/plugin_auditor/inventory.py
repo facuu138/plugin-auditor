@@ -6,6 +6,7 @@ Reads only files on disk. Never writes.
 from __future__ import annotations
 
 import json
+import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -260,8 +261,20 @@ def known_projects(claude_home: Path) -> list[str]:
     return sorted(p for p in found if Path(p).is_dir())
 
 
+def default_home() -> Path:
+    """Claude Code's config folder: $CLAUDE_CONFIG_DIR if set, else ~/.claude."""
+    env = os.environ.get("CLAUDE_CONFIG_DIR")
+    return Path(env).expanduser() if env else Path.home() / ".claude"
+
+
+def claude_json_path(claude_home: Path) -> Path:
+    """MCP servers file: inside a custom config folder if it holds one, else ~/.claude.json."""
+    inside = claude_home / ".claude.json"
+    return inside if inside.exists() else claude_home.parent / ".claude.json"
+
+
 def scan(claude_home: Path | None = None) -> list[Source]:
-    claude_home = claude_home or Path.home() / ".claude"
+    claude_home = claude_home or default_home()
     projects = known_projects(claude_home)
     sources: list[Source] = []
 
@@ -344,7 +357,7 @@ def scan(claude_home: Path | None = None) -> list[Source]:
             target.components += _hooks_from(hooks, str(path))
 
     # User and per-project MCP servers from ~/.claude.json.
-    cj = _load_json(claude_home.parent / ".claude.json")
+    cj = _load_json(claude_json_path(claude_home))
     for name in cj.get("mcpServers", {}) or {}:
         user.components.append(Component("mcp", name, "~/.claude.json"))
     for proj, cfg in (cj.get("projects") or {}).items():

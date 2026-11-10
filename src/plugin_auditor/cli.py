@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from . import __version__
-from .inventory import Component, Source, scan, shadowed_skills
+from .inventory import Component, Source, default_home, scan, shadowed_skills
 from .usage import Usage, attribute, read_events
 
 NEW_DAYS = 7  # items younger than this are "too new to judge"
@@ -20,7 +20,7 @@ INVOCABLE = ("skill", "command", "agent", "mcp")
 
 def _short(path: str) -> str:
     home = str(Path.home())
-    return "~" + path[len(home):] if path.startswith(home) else path
+    return "~" + path[len(home):] if path == home or path.startswith(home + "/") else path
 
 
 def _day(ts: str) -> str:
@@ -59,6 +59,22 @@ def _invoked_as(s: Source, c: Component) -> str:
     if s.kind in ("plugin", "synced") and c.kind in ("skill", "command", "agent"):
         return f"{s.name}:{c.name}"
     return c.name
+
+
+def _home(args) -> Path:
+    return Path(args.home).expanduser() if args.home else default_home()
+
+
+def _int_between(lo: int, hi: int):
+    def parse(text: str) -> int:
+        try:
+            n = int(text)
+        except ValueError:
+            raise argparse.ArgumentTypeError(f"{text!r} is not a whole number")
+        if not lo <= n <= hi:
+            raise argparse.ArgumentTypeError(f"must be between {lo} and {hi}")
+        return n
+    return parse
 
 
 def _table(rows: list[list[str]], headers: list[str]) -> str:
@@ -121,7 +137,7 @@ def auto_risk(args, progress=None) -> str:
         return "off (--no-risk)"
     if not find_skillspector():
         return "SkillSpector not installed"
-    home = Path(args.home).expanduser() if args.home else Path.home() / ".claude"
+    home = _home(args)
     paths = [c.path for s in scan(home) for c in s.components if c.kind == "skill"]
     if not stale_folders(home, paths):
         return "up to date"
@@ -131,13 +147,13 @@ def auto_risk(args, progress=None) -> str:
 
 
 def build(args, cache=None, risk_status: str = "") -> dict:
-    home = Path(args.home).expanduser() if args.home else None
+    home = _home(args)
     now = datetime.now(timezone.utc)
     since = (now - timedelta(days=args.since)).isoformat() if args.since else ""
 
     sources = scan(home)
     from .risk import RiskCache, cached_risk
-    risk_cache = RiskCache(home or Path.home() / ".claude").load()
+    risk_cache = RiskCache(home).load()
     events, sessions = read_events(home, since, cache)
     cutoffs = {w: (now - timedelta(days=n)).isoformat() for w, n in (("7d", 7), ("30d", 30))}
     att = attribute(events, sources, cutoffs)
@@ -216,7 +232,7 @@ def build(args, cache=None, risk_status: str = "") -> dict:
             for k, v in sorted(att.unattributed.items(), key=lambda kv: -kv[1].count)
         },
         "shadowed_skills": shadowed_skills(sources),
-        "hook": _hook_status(home or Path.home() / ".claude"),
+        "hook": _hook_status(home),
         "risk_status": risk_status,
         "auditor_tokens": _auditor_tokens(risk_cache),
     }
@@ -232,7 +248,10 @@ def _hook_status(home: Path) -> str:
     from .hookconfig import is_stale, status
     from .usage import db_events
 
-    installed = status(home / "settings.json")
+    try:
+        installed = status(home / "settings.json")
+    except SystemExit:  # a broken settings.json must not stop a read-only report
+        return "unknown (settings.json is not valid JSON)"
     logged = len(db_events(home))
     if installed and is_stale(home / "settings.json"):
         return "installed but BROKEN: its python or script moved. Run `cpa install-hook` again"
@@ -296,10 +315,11 @@ def view_skills(data: dict) -> None:
                          ("error" if risk.get("error") else f"{risk['score']} {risk['recommendation']}") if risk else ""])
     rows.sort(key=lambda r: (-(int(r[6] or 0) + int(r[7] or 0)), r[2], r[0]))
     headers = ["Name", "Kind", "Source", "Scope", "Added", "~Tokens", "By Claude", "By you", "Last used", "Verdict", "Risk"]
-    if not any(r[-1] for r in rows):
+    has_risk = any(r[-1] for r in rows)
+    if not has_risk:
         headers, rows = headers[:-1], [r[:-1] for r in rows]
     print(_table(rows, headers))
-    if len(headers) == 10:
+    if not has_risk:
         print("\nRun `cpa risk` to add a security risk column (needs NVIDIA SkillSpector).")
     _print_unattributed(data, kinds=("skill", "command", "agent"))
 
@@ -307,7 +327,7 @@ def view_skills(data: dict) -> None:
 def view_risk(data: dict, args) -> int:
     from .risk import scan_all
 
-    home = Path(args.home).expanduser() if args.home else Path.home() / ".claude"
+    home = _home(args)
     skills = [(i, c) for i in data["items"] for c in i["components"] if c["kind"] == "skill"]
     print("SkillSpector runs in static mode (--no-llm). It still looks up package names on OSV.dev.\n")
     try:
@@ -390,6 +410,10 @@ def _print_unattributed(data: dict, kinds: tuple[str, ...] | None) -> None:
 def _filter(data: dict, text: str) -> dict:
     t = text.lower()
     data["items"] = [i for i in data["items"] if t in i["label"].lower() or t in i["id"].lower()]
+    names = {c["name"] for i in data["items"] for c in i["components"]}
+    data["recent"] = [e for e in data["recent"] if t in e["source"].lower()]
+    data["unattributed"] = {k: v for k, v in data["unattributed"].items() if t in k.lower()}
+    data["shadowed_skills"] = {n: w for n, w in data["shadowed_skills"].items() if n in names}
     return data
 
 
@@ -403,7 +427,7 @@ def main(argv: list[str] | None = None) -> int:
                         "risk: security scan of each skill with NVIDIA SkillSpector; "
                         "demo: the dashboard on fictional data (--export FILE writes a static demo page)")
     p.add_argument("--source", metavar="TEXT", help="only sources whose name contains TEXT")
-    p.add_argument("--since", type=int, metavar="DAYS", help="only count usage from the last DAYS days")
+    p.add_argument("--since", type=_int_between(1, 36500), metavar="DAYS", help="only count usage from the last DAYS days")
     p.add_argument("--json", action="store_true", help="print machine-readable JSON")
     p.add_argument("--home", help="Claude config folder (default ~/.claude)")
     p.add_argument("--refresh", action="store_true", help="with `risk`, rescan even unchanged skills")
@@ -411,14 +435,16 @@ def main(argv: list[str] | None = None) -> int:
                    help="don't scan new or changed skills with SkillSpector (it runs automatically when installed)")
     p.add_argument("--settings", help="settings file for install-hook (default <home>/settings.json)")
     p.add_argument("--export", metavar="FILE", help="with `demo`, write a self-contained HTML demo instead of serving")
-    p.add_argument("--port", type=int, default=8765, help="port for `serve` (default 8765)")
+    p.add_argument("--port", type=_int_between(1, 65535), default=8765, help="port for `serve` (default 8765)")
     p.add_argument("--no-open", action="store_true", help="with `serve`, don't open the browser")
     p.add_argument("--version", action="version", version=__version__)
     args = p.parse_args(argv)
+    if args.home and args.view not in ("demo",) and not Path(args.home).expanduser().is_dir():
+        p.error(f"--home {args.home}: not a folder")
 
     if args.view in ("install-hook", "uninstall-hook"):
         from . import hookconfig
-        home = Path(args.home).expanduser() if args.home else Path.home() / ".claude"
+        home = _home(args)
         target = Path(args.settings).expanduser() if args.settings else home / "settings.json"
         (hookconfig.install if args.view == "install-hook" else hookconfig.uninstall)(target)
         return 0

@@ -418,3 +418,50 @@ def test_dashboard_rejects_foreign_host(tmp_path):
         assert e.value.code == 403
     finally:
         srv.shutdown()
+
+
+@pytest.mark.parametrize("view", ["report", "skills", "mcp", "scan"])
+def test_main_runs_every_view(tmp_path, capsys, view):
+    from plugin_auditor.cli import main
+
+    home, _ = make_home(tmp_path)
+    assert main([view, "--home", str(home), "--no-risk"]) == 0
+    assert capsys.readouterr().out
+
+
+def test_main_json_is_valid_and_source_filter_trims_it(tmp_path, capsys):
+    from plugin_auditor.cli import main
+
+    home, _ = make_home(tmp_path)
+    assert main(["--home", str(home), "--no-risk", "--json", "--source", "used"]) == 0
+    data = json.loads(capsys.readouterr().out)
+    assert data["items"] and all("used" in i["label"] for i in data["items"])
+    assert all("used" in e["source"].lower() for e in data["recent"])
+
+
+def test_report_survives_broken_settings_json(tmp_path, capsys):
+    from plugin_auditor.cli import main
+
+    home, _ = make_home(tmp_path)
+    (home / "settings.json").write_text("{not json")
+    assert main(["--home", str(home), "--no-risk"]) == 0
+    assert "not valid JSON" in capsys.readouterr().out
+
+
+def test_bad_options_exit_with_a_message(tmp_path):
+    from plugin_auditor.cli import main
+
+    for argv in (["--since", "0"], ["--since", "99999999999"], ["serve", "--port", "99999"],
+                 ["--home", str(tmp_path / "missing")]):
+        with pytest.raises(SystemExit) as e:
+            main(argv)
+        assert e.value.code == 2
+
+
+def test_claude_config_dir_is_honored(tmp_path, monkeypatch):
+    from plugin_auditor.inventory import default_home
+
+    monkeypatch.setenv("CLAUDE_CONFIG_DIR", str(tmp_path / "custom"))
+    assert default_home() == tmp_path / "custom"
+    monkeypatch.delenv("CLAUDE_CONFIG_DIR")
+    assert default_home() == Path.home() / ".claude"

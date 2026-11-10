@@ -309,7 +309,8 @@ def scan_all(claude_home: Path, skill_paths: list[str], refresh: bool = False, w
 
     if todo:
         progress(f"Scanning {len(todo)} skill folders with SkillSpector (static, --no-llm). "
-                 f"{len(folders) - len(todo)} are cached.")
+                 f"{len(folders) - len(todo)} are cached. It looks up package names on OSV.dev; "
+                 f"use --no-risk to skip.")
 
     def work(item):
         folder, fp = item

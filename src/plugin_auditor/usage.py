@@ -12,7 +12,7 @@ import sqlite3
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from .inventory import Source
+from .inventory import Source, default_home
 
 BUILTIN_COMMANDS = {
     "add-dir", "agents", "bug", "clear", "compact", "config", "context", "cost", "doctor", "exit",
@@ -205,7 +205,7 @@ def db_events(claude_home: Path) -> list[Event]:
 
 def read_events(claude_home: Path | None = None, since: str = "",
                 cache: TranscriptCache | None = None) -> tuple[list[Event], Sessions]:
-    claude_home = claude_home or Path.home() / ".claude"
+    claude_home = claude_home or default_home()
     events: list[Event] = []
     seen: set[str] = set()
     sessions: dict[str, tuple[str, str]] = {}

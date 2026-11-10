@@ -15,6 +15,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib import resources
 from pathlib import Path
 
+from .inventory import claude_json_path, default_home
 from .usage import TranscriptCache, transcript_files
 
 
@@ -24,7 +25,7 @@ ALLOWED_HOSTS = {"127.0.0.1", "localhost"}
 class State:
     def __init__(self, args) -> None:
         self.args = args
-        self.home = Path(args.home).expanduser() if args.home else Path.home() / ".claude"
+        self.home = Path(args.home).expanduser() if args.home else default_home()
         self.cache = TranscriptCache()
         self.cond = threading.Condition()
         self.version = 0
@@ -40,7 +41,7 @@ class State:
         files = transcript_files(self.home)
         extra = [self.home / "settings.json", self.home / "plugins" / "installed_plugins.json",
                  self.home / "plugin-auditor" / "usage.db",
-                 self.home.parent / ".claude.json"]  # MCP servers and their per-project disabled lists
+                 claude_json_path(self.home)]  # MCP servers and their per-project disabled lists
         sig = []
         for f in files + extra + self.watched:
             try:
