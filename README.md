@@ -1,8 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/logo-dark.svg">
-    <img src="docs/logo.svg" alt="plugin-auditor logo" width="96">
-  </picture>
+  <img src="docs/banner.svg" alt="plugin-auditor" width="380">
 </p>
 
 # plugin-auditor
